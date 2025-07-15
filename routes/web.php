@@ -1,15 +1,15 @@
 <?php
 
-use App\Http\Controllers\PdfActController;
-use Illuminate\Support\Facades\Route;
-use App\Http\Controllers\Auth\AuthController;
-use App\Http\Controllers\ExecutiveDocsController;
-use App\Http\Controllers\PassportController;
-use App\Http\Controllers\ActController;
-use App\Http\Controllers\PdfController;
-use App\Http\Controllers\QrController;
+use App\Http\Controllers\ObjectAndProjectController;
 use App\Http\Controllers\ProfileController;
-use App\Http\Controllers\ProjectController;
+use App\Http\Controllers\Auth\AuthController;
+use App\Http\Controllers\ActController;
+use App\Http\Controllers\PdfActController;
+use App\Http\Controllers\QrController;
+use App\Http\Controllers\NotificationController;
+
+use App\Http\Controllers\ExecutiveDocsController;
+
 
 
 // Главная страница (доступна всем)
@@ -17,25 +17,37 @@ Route::get('/', function () {
     return view('welcome');
 })->name('home');
 
-// Группа защищённых маршрутов
+
 Route::middleware(['auth'])->group(function () {
+    Route::get('/dashboard', [AuthController::class, 'dashboard'])->name('dashboard');
+    Route::post('/logout', [AuthController::class, 'logout'])->name('logout');
 
-    // Аутентификация (dashboard и logout)
-    Route::get('dashboard', [AuthController::class, 'dashboard'])->name('dashboard');
-    Route::post('logout', [AuthController::class, 'logout'])->name('logout');
+    Route::get('/profile/complete', [ProfileController::class, 'edit'])->name('complete-profile');
+    Route::post('/profile/complete', [ProfileController::class, 'update'])->name('profile.update');
 
-    // Исполнительная документация
-    Route::post('/executive-docs', [ExecutiveDocsController::class, 'store'])->name('executive-docs.store');
+    Route::middleware('profile.complete')->group(function () {
+        // Управление объектами и проектами (это одно и то же у тебя)
+        Route::get('/projects', [ObjectAndProjectController::class, 'index'])->name('projects.index');
+        Route::get('/projects/create', [ObjectAndProjectController::class, 'projectCreate'])->name('projects.create');
+        Route::post('/projects', [ObjectAndProjectController::class, 'store'])->name('projects.store');
+        Route::get('/projects/{passport}', [ObjectAndProjectController::class, 'show'])->name('projects.show');
 
-    // Объекты и акты
-    Route::get('/objects', [PassportController::class, 'index'])->name('objects.index');
-    Route::get('/objects/create', [PassportController::class, 'create'])->name('objects.create');
-    Route::post('/objects', [PassportController::class, 'store'])->name('objects.store');
-    Route::get('/objects/{passport}', [PassportController::class, 'show'])->name('objects.show');
-    Route::get('/objects/{passport}/acts/create', [ActController::class, 'create'])->name('acts.create');
-    Route::post('/objects/{passport}/acts', [ActController::class, 'store'])->name('acts.store');
-    Route::get('/acts/{id}/pdf', [PdfActController::class, 'download'])->name('acts.pdf');
+        Route::post('/projects/{passport}/invite', [ObjectAndProjectController::class, 'invite'])->name('projects.invite');
+        Route::get('/notifications', [ObjectAndProjectController::class, 'notifications'])->name('notifications');
+        Route::get('/notifications/{id}', [NotificationController::class, 'show'])->name('notifications.show');
+        Route::get('/pdf/view/{id}', [PdfActController::class, 'view'])->name('pdf.view');
+
+
+        Route::post('/invitations/{invitation}/accept', [ObjectAndProjectController::class, 'accept'])->name('invitation.accept');
+        Route::post('/invitations/{invitation}/decline', [ObjectAndProjectController::class, 'decline'])->name('invitation.decline');
+
+        // Акты
+        Route::get('/projects/{passport}/acts/create', [ActController::class, 'create'])->name('acts.create');
+        Route::post('/projects/{passport}/acts', [ActController::class, 'store'])->name('acts.store');
+        Route::get('/acts/{id}/pdf', [PdfActController::class, 'download'])->name('acts.pdf');
+    });
 });
+
 
 // Маршруты для регистрации и логина (доступны всем)
 Route::get('login', [AuthController::class, 'showLoginForm'])->name('login');
@@ -47,16 +59,3 @@ Route::get('/pdf/hash/{id}', [PdfActController::class, 'getHash']);
 Route::post('/pdf/sign', [PdfActController::class, 'signPdf']);
 Route::get('/qr/{id}', [QrController::class, 'show'])->name('qr.xml.view');
 
-Route::middleware(['auth'])->group(function () {
-    Route::get('/profile/complete', [ProfileController::class, 'edit'])->name('complete-profile');
-    Route::post('/profile/complete', [ProfileController::class, 'update'])->name('profile.update');
-
-    Route::middleware('profile.complete')->group(function () {
-        Route::resource('projects', ProjectController::class)->middleware('can:create-project');
-        Route::post('/projects/{project}/invite', [ProjectController::class, 'invite'])->name('projects.invite');
-
-        Route::get('/notifications', [ProjectController::class, 'notifications'])->name('notifications');
-        Route::post('/invitations/{invitation}/accept', [ProjectController::class, 'accept'])->name('invitation.accept');
-        Route::post('/invitations/{invitation}/decline', [ProjectController::class, 'decline'])->name('invitation.decline');
-    });
-});

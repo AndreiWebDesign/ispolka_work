@@ -11,7 +11,10 @@ return Application::configure(basePath: dirname(__DIR__))
         health: '/up',
     )
     ->withMiddleware(function (Middleware $middleware): void {
-        //
+        // 👇 Регистрируем middleware по псевдониму
+        $middleware->alias([
+            'profile.complete' => \App\Http\Middleware\EnsureProfileIsComplete::class,
+        ]);
     })
     ->withExceptions(function (Exceptions $exceptions): void {
         //

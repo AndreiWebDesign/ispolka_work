@@ -61,7 +61,7 @@ class ActController extends Controller
         // Сохраняем акт как hidden work, привязывая к объекту
         $passport->hiddenWorks()->create($validated);
 
-        return redirect()->route('objects.show', $passport)->with('success', 'Акт успешно создан!');
+        return redirect()->route('projects.show', $passport)->with('success', 'Акт успешно создан!');
     }
 
     public function passport()

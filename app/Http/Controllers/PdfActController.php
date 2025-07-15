@@ -54,6 +54,8 @@ class PdfActController extends Controller
 
             $pdf = new Pdf($templatePath);
             $pdf->fillForm($fields)
+                ->needAppearances()
+                ->flatten()
                 ->saveAs($pdfPath);
         }
 
@@ -176,5 +178,59 @@ XML;
         $pdf->Output($outputPath, 'F');
         return response()->download($outputPath, "Акт_подписанный_{$id}.pdf")->deleteFileAfterSend(true);
     }
+    public function view($id)
+    {
+        $act = HiddenWork::findOrFail($id);
 
+        $pdfPath = storage_path("app/pdf_outputs/act_{$id}.pdf");
+
+        // Если файл отсутствует — генерируем его
+        if (!file_exists($pdfPath)) {
+            $templatePath = storage_path('app/pdf_templates/hidden_work_template.pdf');
+
+            $fields = [
+                'act_number' => $act->act_number,
+                'city' => $act->city,
+                'act_date' => $act->act_date,
+                'object_name' => $act->object_name,
+                'contractor_representative' => $act->contractor_representative,
+                'tech_supervisor_representative' => $act->tech_supervisor_representative,
+                'author_supervisor_representative' => $act->author_supervisor_representative,
+                'additional_participants' => $act->additional_participants,
+                'work_executor' => $act->work_executor,
+                'hidden_works' => $act->hidden_works,
+                'psd_info' => $act->psd_info,
+                'materials' => $act->materials,
+                'compliance_evidence' => $act->compliance_evidence,
+                'deviations' => $act->deviations,
+                'start_date' => $act->start_date,
+                'end_date' => $act->end_date,
+                'commission_decision' => $act->commission_decision,
+                'next_works' => $act->next_works,
+                'contractor_sign_name' => $act->contractor_sign_name,
+                'contractor_sign' => $act->contractor_sign,
+                'tech_supervisor_sign_name' => $act->tech_supervisor_sign_name,
+                'tech_supervisor_sign' => $act->tech_supervisor_sign,
+                'author_supervisor_sign_name' => $act->author_supervisor_sign_name,
+                'author_supervisor_sign' => $act->author_supervisor_sign,
+                'additional_signs' => $act->additional_signs,
+            ];
+
+            $pdf = new Pdf($templatePath);
+            $result = $pdf->fillForm($fields)
+                ->needAppearances()
+                ->flatten()
+                ->saveAs($pdfPath);
+
+            if (!$result) {
+                abort(500, 'Ошибка генерации PDF: ' . $pdf->getError());
+            }
+        }
+
+        // Возврат для отображения в браузере
+        return response()->file($pdfPath, [
+            'Content-Type' => 'application/pdf',
+            'Content-Disposition' => 'inline; filename="Акт_просмотр.pdf"',
+        ]);
+    }
 }

@@ -13,11 +13,12 @@ return new class extends Migration
     {
         Schema::create('project_user_roles', function (Blueprint $table) {
             $table->id();
+            $table->foreignId('passport_id')->constrained('passports')->onDelete('cascade');
             $table->foreignId('user_id')->constrained()->onDelete('cascade');
-            $table->foreignId('project_id')->constrained()->onDelete('cascade');
-            $table->enum('role', ['технадзор', 'авторнадзор']);
+            $table->string('role');
             $table->timestamps();
         });
+
     }
 
     /**

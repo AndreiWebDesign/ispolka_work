@@ -1,12 +1,13 @@
 <?php
 
 namespace App\Models;
-use Model;
+
+use Illuminate\Database\Eloquent\Model;
 use User;
 
 class ProjectInvitation extends Model
 {
-    protected $fillable = ['user_id', 'project_id', 'role', 'status'];
+    protected $fillable = ['user_id', 'passport_id', 'role', 'status'];
 
     public function project()
     {
@@ -16,5 +17,10 @@ class ProjectInvitation extends Model
     public function user()
     {
         return $this->belongsTo(User::class);
+    }
+
+    public function passport()
+    {
+        return $this->belongsTo(Passport::class);
     }
 }

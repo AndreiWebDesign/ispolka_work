@@ -1,4 +1,8 @@
 <?php
+
+namespace App\Http\Controllers;
+
+use Illuminate\Http\Request;
 class ProfileController extends Controller
 {
     public function edit()
@@ -14,13 +18,13 @@ class ProfileController extends Controller
             'role' => 'required|in:подрядчик,технадзор,авторнадзор',
         ]);
 
-        auth()->user()->update([
-            'bin' => $request->bin,
-            'organization_name' => $request->organization_name,
-            'role' => $request->role,
-            'is_profile_complete' => true,
-        ]);
+        $user = auth()->user();
+        $user->bin = $request->bin;
+        $user->organization_name = $request->organization_name;
+        $user->role = $request->role;
+        $user->is_profile_complete = true;
+        $user->save();
 
-        return redirect()->route('projects.index');
+        return redirect()->route('projects.index')->with('success', 'Профиль заполнен');
     }
 }

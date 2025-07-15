@@ -3,7 +3,7 @@
 
 @section('content')
     <div class="container py-4 d-flex justify-content-center align-items-center" style="min-height: 70vh;">
-        <form method="POST" action="{{ route('objects.store') }}" class="bg-white p-4 rounded shadow w-100" style="max-width: 700px;">
+        <form method="POST" action="{{ route('projects.store') }}" class="bg-white p-4 rounded shadow w-100" style="max-width: 700px;">
             @csrf
 
             <h2 class="mb-4 text-center">Добавить паспорт объекта</h2>

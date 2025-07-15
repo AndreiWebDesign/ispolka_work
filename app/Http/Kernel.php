@@ -61,5 +61,6 @@ class Kernel extends HttpKernel
 
         // === Добавлено для проверки профиля ===
         'profile.complete' => \App\Http\Middleware\EnsureProfileIsComplete::class,
+
     ];
 }

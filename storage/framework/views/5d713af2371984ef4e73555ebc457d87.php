@@ -7,7 +7,7 @@
             <a href="<?php echo e(route('acts.create', $passport)); ?>" class="btn btn-success">Создать акт</a>
         </div>
 
-        
+
         <?php if(session('success')): ?>
             <div class="alert alert-success"><?php echo e(session('success')); ?></div>
         <?php endif; ?>
@@ -49,4 +49,4 @@
     </div>
 <?php $__env->stopSection(); ?>
 
-<?php echo $__env->make('layouts.app', array_diff_key(get_defined_vars(), ['__data' => 1, '__path' => 1]))->render(); ?><?php /**PATH /var/www/ispolka/resources/views/objects/show.blade.php ENDPATH**/ ?>
+<?php echo $__env->make('layouts.app', array_diff_key(get_defined_vars(), ['__data' => 1, '__path' => 1]))->render(); ?><?php /**PATH /var/www/ispolka/resources/views/projects/show.blade.php ENDPATH**/ ?>

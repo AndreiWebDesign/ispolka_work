@@ -2,7 +2,7 @@
 
 <?php $__env->startSection('content'); ?>
     <div class="container py-4 d-flex justify-content-center align-items-center" style="min-height: 70vh;">
-        <form method="POST" action="<?php echo e(route('objects.store')); ?>" class="bg-white p-4 rounded shadow w-100" style="max-width: 700px;">
+        <form method="POST" action="<?php echo e(route('projects.store')); ?>" class="bg-white p-4 rounded shadow w-100" style="max-width: 700px;">
             <?php echo csrf_field(); ?>
 
             <h2 class="mb-4 text-center">Добавить паспорт объекта</h2>
@@ -75,4 +75,4 @@
     </div>
 <?php $__env->stopSection(); ?>
 
-<?php echo $__env->make('layouts.app', array_diff_key(get_defined_vars(), ['__data' => 1, '__path' => 1]))->render(); ?><?php /**PATH /var/www/ispolka/resources/views/objects/create.blade.php ENDPATH**/ ?>
+<?php echo $__env->make('layouts.app', array_diff_key(get_defined_vars(), ['__data' => 1, '__path' => 1]))->render(); ?><?php /**PATH /var/www/ispolka/resources/views/projects/create.blade.php ENDPATH**/ ?>

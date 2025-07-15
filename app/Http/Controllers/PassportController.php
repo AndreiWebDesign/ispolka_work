@@ -11,13 +11,13 @@ class PassportController extends Controller
     public function index()
     {
         $passports = auth()->user()->passports()->latest()->get();
-        return view('objects.index', compact('passports'));
+        return view('projects.index', compact('passports'));
     }
 
     // Форма создания паспорта
     public function create()
     {
-        return view('objects.create');
+        return view('projects.create');
     }
 
     // Сохранение нового паспорта
@@ -42,7 +42,7 @@ class PassportController extends Controller
 
         $passport = Passport::create($validated);
 
-        return redirect()->route('objects.show', $passport)->with('success', 'Паспорт объекта создан!');
+        return redirect()->route('projects.show', $passport)->with('success', 'Паспорт объекта создан!');
     }
 
     // Просмотр паспорта и связанных актов (только для владельца)
@@ -56,6 +56,6 @@ class PassportController extends Controller
         // Получаем все акты, связанные с этим паспортом
         $acts = $passport->hiddenWorks()->orderBy('act_date', 'desc')->get();
 
-        return view('objects.show', compact('passport', 'acts'));
+        return view('projects.show', compact('passport', 'acts'));
     }
 }

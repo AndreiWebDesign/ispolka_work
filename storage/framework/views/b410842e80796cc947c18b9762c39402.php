@@ -39,7 +39,7 @@
                 <a href="<?php echo e(url('/')); ?>" class="list-group-item list-group-item-action <?php echo e(request()->is('/') ? 'active' : ''); ?>">Главная</a>
                 <a href="#" class="list-group-item list-group-item-action">Создать документ</a>
                 <a href="#" class="list-group-item list-group-item-action">Исполнительная документация</a>
-                <a href="<?php echo e(route('objects.index')); ?>" class="list-group-item list-group-item-action <?php echo e(request()->routeIs('objects.index') ? 'active' : ''); ?>">Объекты</a>
+                <a href="<?php echo e(route('projects.index')); ?>" class="list-group-item list-group-item-action <?php echo e(request()->routeIs('projects.index') ? 'active' : ''); ?>">Объекты</a>
             </div>
         </div>
         <!-- Контент страницы -->

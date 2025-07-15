@@ -57,7 +57,7 @@ class AuthController extends Controller
         $user = $this->create($data);
         Auth::login($user);
         $request->session()->regenerate();
-        return redirect()->route('dashboard')->with('success', 'Регистрация прошла успешно!');
+        return redirect()->route('complete-profile');
     }
 
     public function dashboard()

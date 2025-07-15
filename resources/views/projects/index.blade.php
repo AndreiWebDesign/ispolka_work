@@ -5,8 +5,11 @@
     <div class="container py-4">
         <div class="d-flex justify-content-between align-items-center mb-4">
             <h2>Паспорта объектов</h2>
-            <a href="{{ route('objects.create') }}" class="btn btn-success">Создать паспорт объекта</a>
+            @if(auth()->user()->role === 'подрядчик')
+                <a href="{{ route('projects.create') }}" class="btn btn-success">Создать проект</a>
+            @endif
         </div>
+
         @if($passports->isEmpty())
             <div class="alert alert-info">Нет созданных объектов.</div>
         @else
@@ -28,7 +31,7 @@
                         <td>{{ $passport->city ?? '-' }}/{{ $passport->locality ?? '-' }}</td>
                         <td>{{ $passport->customer }}</td>
                         <td>
-                            <a href="{{ route('objects.show', $passport) }}" class="btn btn-primary btn-sm">Открыть</a>
+                            <a href="{{ route('projects.show', $passport) }}" class="btn btn-primary btn-sm">Открыть</a>
                         </td>
                     </tr>
                 @endforeach

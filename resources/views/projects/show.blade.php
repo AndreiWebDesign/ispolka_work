@@ -5,9 +5,11 @@
     <div class="container py-4">
         <h2 class="mb-3">Объект: {{ $passport->object_name ?? $passport->id }}</h2>
 
-        <div class="mb-4">
-            <a href="{{ route('acts.create', $passport) }}" class="btn btn-success">Создать акт</a>
-        </div>
+        @if ($role === 'подрядчик')
+            <div class="mb-4">
+                <a href="{{ route('acts.create', $passport) }}" class="btn btn-success">Создать акт</a>
+            </div>
+        @endif
 
         @if (session('success'))
             <div class="alert alert-success">{{ session('success') }}</div>
@@ -17,6 +19,19 @@
         @endif
 
         <h4>Список актов</h4>
+        @if(auth()->user()->role === 'подрядчик')
+            <div class="mb-3">
+                <form method="POST" action="{{ route('projects.invite', $passport) }}">
+                    @csrf
+                    <input name="bin" required>
+                    <select name="role" required>
+                        <option value="технадзор">Технический надзор</option>
+                        <option value="авторнадзор">Авторский надзор</option>
+                    </select>
+                    <button type="submit">Пригласить</button>
+                </form>
+            </div>
+        @endif
         @if ($acts->isEmpty())
             <div class="alert alert-info">Для этого объекта ещё нет актов.</div>
         @else
@@ -36,10 +51,14 @@
                         <td>{{ $act->act_date }}</td>
                         <td>{{ $act->type ?? '-' }}</td>
                         <td>
-                            <button class="btn btn-outline-primary btn-sm"
-                                    onclick="signAct({{ $act->id }})">
+                            <button class="btn btn-outline-primary btn-sm" onclick="signAct({{ $act->id }})">
                                 <i class="bi bi-pen"></i> Подписать и скачать
                             </button>
+
+                            <a href="{{ route('pdf.view', $act->id) }}" class="btn btn-outline-secondary btn-sm" target="_blank">
+                                <i class="bi bi-eye"></i> Просмотреть
+                            </a>
+
                             <div id="output-{{ $act->id }}" class="small text-muted mt-1"></div>
                         </td>
                     </tr>

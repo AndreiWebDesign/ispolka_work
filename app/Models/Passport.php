@@ -25,7 +25,12 @@ class Passport extends Model
         'object_name',
         'user_id',
     ];
-
+    public function userRole()
+    {
+        return $this->belongsToMany(User::class, 'project_user_roles', 'passport_id', 'user_id')
+            ->withPivot('role')
+            ->wherePivot('user_id', auth()->id());
+    }
     public function hiddenWorks()
     {
         return $this->hasMany(\App\Models\HiddenWork::class);
@@ -34,5 +39,17 @@ class Passport extends Model
     public function user()
     {
         return $this->belongsTo(\App\Models\User::class);
+    }
+
+    public function users()
+    {
+        return $this->belongsToMany(User::class, 'project_user_roles')
+            ->withPivot('role') // если хранишь роль
+            ->withTimestamps();
+    }
+
+    public function invitations()
+    {
+        return $this->hasMany(ProjectInvitation::class, 'passport_id');
     }
 }

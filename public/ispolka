@@ -1,0 +1,58 @@
+server {
+    server_name docstroi.kz www.docstroi.kz;
+
+    root /var/www/ispolka/public;
+    index index.php index.html;
+
+    access_log /var/log/nginx/ispolka_access.log;
+    error_log  /var/log/nginx/ispolka_error.log;
+
+    location / {
+        try_files $uri $uri/ /index.php?$query_string;
+    }
+
+    location ~ \.php$ {
+        include snippets/fastcgi-php.conf;
+        fastcgi_pass unix:/var/run/php/php8.2-fpm.sock;
+        fastcgi_param SCRIPT_FILENAME $document_root$fastcgi_script_name;
+        include fastcgi_params;
+    }
+
+    location ~ /\.ht {
+        deny all;
+    }
+
+     location /storage/ {
+            alias /var/www/ispolka/storage/app/public/;
+            autoindex on;
+            access_log off;
+            add_header Cache-Control public;
+        }
+
+    listen 443 ssl; # managed by Certbot
+    ssl_certificate /etc/letsencrypt/live/docstroi.kz/fullchain.pem; # managed by Certbot
+    ssl_certificate_key /etc/letsencrypt/live/docstroi.kz/privkey.pem; # managed by Certbot
+    include /etc/letsencrypt/options-ssl-nginx.conf; # managed by Certbot
+    ssl_dhparam /etc/letsencrypt/ssl-dhparams.pem; # managed by Certbot
+
+
+}
+server {
+    if ($host = www.docstroi.kz) {
+        return 301 https://$host$request_uri;
+    } # managed by Certbot
+
+
+    if ($host = docstroi.kz) {
+        return 301 https://$host$request_uri;
+    } # managed by Certbot
+
+
+    listen 80;
+    server_name docstroi.kz www.docstroi.kz;
+    return 404; # managed by Certbot
+
+
+
+
+}
