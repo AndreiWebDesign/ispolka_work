@@ -9,6 +9,7 @@ use App\Http\Controllers\QrController;
 use App\Http\Controllers\NotificationController;
 
 use App\Http\Controllers\ExecutiveDocsController;
+use App\Http\Controllers\CmsCheckController;
 
 
 
@@ -45,6 +46,7 @@ Route::middleware(['auth'])->group(function () {
         Route::get('/projects/{passport}/acts/create', [ActController::class, 'create'])->name('acts.create');
         Route::post('/projects/{passport}/acts', [ActController::class, 'store'])->name('acts.store');
         Route::get('/acts/{id}/pdf', [PdfActController::class, 'download'])->name('acts.pdf');
+        Route::get('/acts/{id}', [PdfActController::class, 'view'])->name('acts.show');
     });
 });
 
@@ -56,6 +58,14 @@ Route::get('registration', [AuthController::class, 'registration'])->name('regis
 Route::post('post-registration', [AuthController::class, 'postRegistration'])->name('register.post');
 
 Route::get('/pdf/hash/{id}', [PdfActController::class, 'getHash']);
-Route::post('/pdf/sign', [PdfActController::class, 'signPdf']);
+Route::post('/pdf/sign', [PdfActController::class, 'sign']);
 Route::get('/qr/{id}', [QrController::class, 'show'])->name('qr.xml.view');
+Route::get('/download-cms/{id}/{role}', [PdfActController::class, 'downloadCms'])->name('download.cms');
+Route::get('/pdf/base64/{id}', [PdfActController::class, 'getBase64']);
+
+Route::get('/cms-check', [CmsCheckController::class, 'index'])->name('cms.check');
+Route::post('/cms-check', [CmsCheckController::class, 'extract'])->name('cms.extract');
+
+
+
 

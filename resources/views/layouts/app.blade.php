@@ -2,82 +2,58 @@
 <html lang="ru">
 <head>
     <meta charset="UTF-8">
-    <title>@yield('title', 'eCTN')</title>
-    <meta name="viewport" content="width=device-width, initial-scale=1">
-    <!-- Bootstrap CSS и иконки -->
-    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
-    <link href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.min.css" rel="stylesheet">
+    <title>Hireism Dashboard</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <meta name="csrf-token" content="{{ csrf_token() }}">
+
+    <!-- Bootstrap 5 CSS -->
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
+    <!-- Bootstrap Icons -->
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.css" rel="stylesheet">
+    <style>
+        body { background: #F4F5FF; }
+        .sidebar { min-width: 220px; max-width: 240px; }
+        .app-card { border-radius: 16px; box-shadow: 0 1px 6px rgba(33,33,99,0.08); }
+        .nav-link.active { background: #EFF1FC; color: #3A47EC !important; border-radius: 8px; }
+        .sidebar-nav .nav-link { color: #676F8F; }
+        .sidebar-nav .nav-link i { margin-right: 8px; }
+        .sidebar .logout { color: #A0A4B8; }
+        .profile-pic { width:48px; height:48px; border-radius:50%; object-fit:cover; }
+        .card-bg-primary { background: #3A47EC !important; color: #fff !important; }
+        .hiring-card { min-width:150px; max-width:180px; }
+        .recruitment-table tbody tr.selected { background: #EEF0FF; }
+        .calendar-cell.selected { background: #EEF0FF; color: #3A47EC !important; border-radius: 6px; }
+        .app-avatar { width:32px; height:32px; border-radius:50%; object-fit:cover; background: #e9ecef; }
+    </style>
 </head>
-<body class="bg-light min-vh-100 d-flex flex-column">
+<body>
+<div class="d-flex min-vh-100">
 
-<!-- Шапка -->
-<div class="container-fluid bg-primary py-2 mb-4">
-    <div class="container d-flex align-items-center">
-        <span class="fs-3 fw-bold text-white me-3">eCTN</span>
-        <span class="text-white ms-auto d-flex align-items-center">
-              <div class="dropdown me-3">
-    <button class="btn btn-sm btn-light position-relative" type="button" id="notificationsDropdown" data-bs-toggle="dropdown" aria-expanded="false">
-        <i class="bi bi-bell"></i>
-        @php $count = auth()->user()?->unreadNotifications()->count(); @endphp
-        @if ($count > 0)
-            <span class="position-absolute top-0 start-100 translate-middle badge rounded-pill bg-danger">
-                {{ $count }}
-            </span>
-        @endif
-    </button>
-   <ul class="dropdown-menu dropdown-menu-end p-2" aria-labelledby="notificationsDropdown" style="width: 320px; max-height: 400px; overflow-y: auto;">
+    <!-- Sidebar -->
+    <aside class="sidebar bg-white p-4 d-flex flex-column shadow-sm">
+        <div class="mb-5 d-flex align-items-center gap-2">
+            <img src="{{ asset('images/logo.png') }}" alt="Логотип" style="height:  52px;" class="mt-4">
 
-      @auth
-           @foreach(auth()->user()->unreadNotifications as $notification)
-               <li class="dropdown-item text-wrap" style="white-space: normal; word-break: break-word;">
-            <a href="{{ route('notifications.show', $notification->id) }}" class="text-decoration-none">
-                {{ $notification->data['message'] }}
-            </a>
-        </li>
-           @endforeach
-       @endauth
-    </ul>
-</div>
-                <i class="bi bi-person-circle ms-3"></i>
-                @auth
-                <form method="POST" action="{{ route('logout') }}" class="d-inline ms-3">
-                        @csrf
-                        <button type="submit" class="btn btn-danger btn-sm">Выйти</button>
-                    </form>
-            @endauth
-            @guest
-                <a href="{{ route('login') }}" class="btn btn-outline-light btn-sm ms-3">Войти</a>
-                <a href="{{ route('register') }}" class="btn btn-light btn-sm ms-2">Регистрация</a>
-            @endguest
-            </span>
-    </div>
-</div>
-
-<div class="container flex-grow-1">
-    <div class="row">
-        <!-- Боковое меню -->
-        <div class="col-md-2 mb-4">
-            <div class="list-group">
-                <a href="{{ url('/') }}" class="list-group-item list-group-item-action {{ request()->is('/') ? 'active' : '' }}">Главная</a>
-                <a href="#" class="list-group-item list-group-item-action">Создать документ</a>
-                <a href="#" class="list-group-item list-group-item-action">Исполнительная документация</a>
-                <a href="{{ route('projects.index') }}" class="list-group-item list-group-item-action {{ request()->routeIs('projects.index') ? 'active' : '' }}">Объекты</a>
-            </div>
         </div>
-        <!-- Контент страницы -->
-        <div class="col-md-10 py-4">
-            @yield('content')
-        </div>
-    </div>
+        <nav class="flex-grow-1 sidebar-nav">
+            <ul class="nav flex-column gap-2">
+                <li class="nav-item">
+                    <a class="nav-link {{ request()->routeIs('dashboard') ? 'active' : '' }}" href="{{ route('dashboard') }}"><i class="bi bi-grid"></i>Главная</a>
+                </li>
+                <li class="nav-item"><a class="nav-link {{ request()->routeIs('projects.index') ? 'active' : '' }}" href="{{ route('projects.index') }}" ><i class="bi bi-file-earmark-text"></i>Текущие обьекты</a></li>
+                <li class="nav-item"><a class="nav-link {{ request()->routeIs('dashboard') ? 'active' : '' }}" href="{{ route('dashboard') }}"> <i class="bi bi-calendar2-week"></i>Отчетность</a></li>
+                <li class="nav-item"><a class="nav-link {{ request()->routeIs('dashboard') ? 'active' : '' }}" href="{{ route('dashboard') }}"> <i class="bi bi-calendar2-week"></i>Архив</a></li>
+            </ul>
+        </nav>
+        <a href="#" class="logout mt-auto mb-2 text-decoration-none"><i class="bi bi-box-arrow-right"></i> Выйти</a>
+    </aside>
+
+    <!-- Main Content -->
+    <main class="flex-grow-1 px-5 py-4">
+        @yield('content')
+    </main>
 </div>
-
-<footer class="bg-primary text-white text-center py-3 mt-auto">
-    &copy; {{ date('Y') }} eCTN. Все права защищены.
-</footer>
-
 <!-- Bootstrap JS -->
 <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
-@stack('scripts')
 </body>
 </html>

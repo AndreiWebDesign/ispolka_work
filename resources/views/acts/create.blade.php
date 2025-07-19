@@ -5,6 +5,7 @@
     <div class="container py-4 d-flex justify-content-center">
         <form method="POST" action="{{ route('acts.store', $passport) }}" class="bg-white p-4 rounded shadow w-100" style="max-width: 900px;">
             @csrf
+            <input type="hidden" name="passport_id" value="{{ $passport->id }}">
                 <h2 class="mb-4 text-center">Акт освидетельствования скрытых работ</h2>
 
             <div class="row mb-3">

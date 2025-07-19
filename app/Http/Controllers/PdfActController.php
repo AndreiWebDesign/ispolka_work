@@ -1,236 +1,113 @@
 <?php
 
-
 namespace App\Http\Controllers;
-use App\Models\HiddenWork;
-use Illuminate\Http\Request;
-use Endroid\QrCode\QrCode;
-use Endroid\QrCode\Writer\PngWriter;
-use setasign\Fpdi\Fpdi;
-use mikehaertl\pdftk\Pdf;
-use Illuminate\Support\Facades\Storage;
 
+use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Storage;
+use App\Models\HiddenWork;
+use Illuminate\Support\Facades\Response;
 
 class PdfActController extends Controller
 {
 
-    public function getHash($id)
-    {
-        $act = HiddenWork::findOrFail($id);
+    public function sign(Request $request)
+{
+    $request->validate([
+        'id' => 'required|integer|exists:hidden_works,id',
+        'cms' => 'required|string',
+    ]);
 
-        $pdfPath = storage_path("app/pdf_outputs/act_{$id}.pdf");
+    $act = HiddenWork::findOrFail($request->id);
+    $cmsBase64 = $request->input('cms');
 
-        if (!file_exists($pdfPath)) {
-            // Автогенерация PDF перед вычислением хэша
-            $templatePath = storage_path('app/pdf_templates/hidden_work_template.pdf');
+    // Декодируй CMS и сохрани, например:
+    $cmsBinary = base64_decode($cmsBase64);
+    $cmsPath = storage_path("app/cms/act_{$act->id}.cms");
+    file_put_contents($cmsPath, $cmsBinary);
 
-            $fields = [
-                'act_number' => $act->act_number,
-                'city' => $act->city,
-                'act_date' => $act->act_date,
-                'object_name' => $act->object_name,
-                'contractor_representative' => $act->contractor_representative,
-                'tech_supervisor_representative' => $act->tech_supervisor_representative,
-                'author_supervisor_representative' => $act->author_supervisor_representative,
-                'additional_participants' => $act->additional_participants,
-                'work_executor' => $act->work_executor,
-                'hidden_works' => $act->hidden_works,
-                'psd_info' => $act->psd_info,
-                'materials' => $act->materials,
-                'compliance_evidence' => $act->compliance_evidence,
-                'deviations' => $act->deviations,
-                'start_date' => $act->start_date,
-                'end_date' => $act->end_date,
-                'commission_decision' => $act->commission_decision,
-                'next_works' => $act->next_works,
-                'contractor_sign_name' => $act->contractor_sign_name,
-                'contractor_sign' => $act->contractor_sign,
-                'tech_supervisor_sign_name' => $act->tech_supervisor_sign_name,
-                'tech_supervisor_sign' => $act->tech_supervisor_sign,
-                'author_supervisor_sign_name' => $act->author_supervisor_sign_name,
-                'author_supervisor_sign' => $act->author_supervisor_sign,
-                'additional_signs' => $act->additional_signs,
-            ];
-
-            $pdf = new Pdf($templatePath);
-            $pdf->fillForm($fields)
-                ->needAppearances()
-                ->flatten()
-                ->saveAs($pdfPath);
-        }
-
-        if (!file_exists($pdfPath)) {
-            return response()->json(['error' => 'PDF не найден'], 404);
-        }
-
-        $hash = base64_encode(hash_file('sha256', $pdfPath, true));
-
-        return response()->json(['base64hash' => $hash]);
-    }
-
-
+    // Возвращаем успешный ответ
+    return response()->json([
+        'message' => 'CMS сохранён успешно',
+        'cms_path' => $cmsPath
+    ]);
+}
     public function signPdf(Request $request)
     {
         $id = $request->input('id');
         $cmsBase64 = $request->input('cms');
 
-        $inputPath = storage_path("app/pdf_outputs/act_{$id}.pdf");
-        $outputPath = storage_path("app/pdf_signed/act_signed_{$id}.pdf");
+        $cmsBinary = base64_decode($cmsBase64);
 
-        if (!file_exists($inputPath)) {
-            return response()->json(['error' => 'PDF не найден'], 404);
-        }
+        $fileName = "act_{$id}.cms"; // или .cms
+        $path = storage_path("app/pdf_signatures/{$fileName}");
+        file_put_contents($path, $cmsBinary);
 
-        // Распаковываем CMS во временный файл
-        $cms = base64_decode($cmsBase64);
-        $cmsPath = storage_path("app/temp_cms_{$id}.p7s");
-        file_put_contents($cmsPath, $cms);
-
-        // Извлекаем сертификат
-        $certOutput = shell_exec("openssl pkcs7 -inform DER -in {$cmsPath} -print_certs -noout");
-        unlink($cmsPath);
-
-        // Извлекаем IIN из SERIALNUMBER
-        preg_match('/SERIALNUMBER=(\d+)/', $certOutput, $match);
-        $iin = $match[1] ?? '000000000000';
-
-        // ФИО из CN
-        preg_match('/CN=([^\/,\n]+)/', $certOutput, $match);
-        $fullName = trim($match[1] ?? 'ФИО');
-
-        // Примерное разбиение ФИО
-        [$surname, $name, $middlename] = array_pad(explode(' ', $fullName), 3, '');
-
-        // Генерация XML <Person>
-        $personXml = <<<XML
-<Person>
-    <IIN>{$iin}</IIN>
-    <SurName>{$surname}</SurName>
-    <Name>{$name}</Name>
-    <MiddleName>{$middlename}</MiddleName>
-    <BirthDate>1980-01-01</BirthDate>
-    <BirthPlace>
-        <Country>Kazakhstan</Country>
-        <CountryKz>Қазақстан</CountryKz>
-        <District>Алматы</District>
-        <DistrictKz>Алматы</DistrictKz>
-        <City>Алматы</City>
-        <CityKz>Алматы</CityKz>
-        <Locality>Центр</Locality>
-        <LocalityKz>Орталық</LocalityKz>
-    </BirthPlace>
-</Person>
-XML;
-
-        $xmlPath = storage_path("app/temp_person_{$id}.xml");
-        file_put_contents($xmlPath, $personXml);
-
-        // Архивация XML в ZIP
-        $zipPath = storage_path("app/temp_person_{$id}.zip");
-        $zip = new \ZipArchive();
-        $zip->open($zipPath, \ZipArchive::CREATE);
-        $zip->addFile($xmlPath, 'person.xml');
-        $zip->close();
-        unlink($xmlPath);
-
-        $zipBase64 = base64_encode(file_get_contents($zipPath));
-        unlink($zipPath);
-
-        // Создание XML BarcodeElement
-        $now = now()->format('Y-m-d\TH:i:s.vP');
-        $barcodeXml = <<<XML
-<?xml version="1.0" encoding="UTF-8" standalone="yes"?>
-<BarcodeElement xmlns="http://barcodes.pdf.shep.nitec.kz/">
-    <creationDate>{$now}</creationDate>
-    <elementData>{$zipBase64}</elementData>
-    <elementNumber>1</elementNumber>
-    <elementsAmount>1</elementsAmount>
-    <FavorID>{$iin}</FavorID>
-</BarcodeElement>
-XML;
-
-        Storage::put("qr_xml/act_{$id}.xml", $barcodeXml);
-
-        // Генерация QR-кода с этим XML (можно также URL, если предпочтительно)
-        $qr = QrCode::create($barcodeXml)->setSize(250);
-        $writer = new PngWriter();
-        $qrPng = $writer->write($qr)->getString();
-
-        $qrPath = storage_path("app/temp_qr_{$id}.png");
-        file_put_contents($qrPath, $qrPng);
-
-        // Вставка в PDF
-        $pdf = new Fpdi();
-        $pageCount = $pdf->setSourceFile($inputPath);
-
-        for ($i = 1; $i <= $pageCount; $i++) {
-            $tplIdx = $pdf->importPage($i);
-            $size = $pdf->getTemplateSize($tplIdx);
-            $pdf->AddPage($size['orientation'], [$size['width'], $size['height']]);
-            $pdf->useTemplate($tplIdx);
-            if ($i === $pageCount) {
-                $pdf->Image($qrPath, $size['width'] - 60, $size['height'] - 60, 50, 50);
-            }
-        }
-
-        unlink($qrPath);
-
-        $pdf->Output($outputPath, 'F');
-        return response()->download($outputPath, "Акт_подписанный_{$id}.pdf")->deleteFileAfterSend(true);
+        return response()->json(['success' => true]);
     }
-    public function view($id)
-    {
-        $act = HiddenWork::findOrFail($id);
 
+
+    public function getBase64($id)
+    {
         $pdfPath = storage_path("app/pdf_outputs/act_{$id}.pdf");
 
-        // Если файл отсутствует — генерируем его
         if (!file_exists($pdfPath)) {
-            $templatePath = storage_path('app/pdf_templates/hidden_work_template.pdf');
-
-            $fields = [
-                'act_number' => $act->act_number,
-                'city' => $act->city,
-                'act_date' => $act->act_date,
-                'object_name' => $act->object_name,
-                'contractor_representative' => $act->contractor_representative,
-                'tech_supervisor_representative' => $act->tech_supervisor_representative,
-                'author_supervisor_representative' => $act->author_supervisor_representative,
-                'additional_participants' => $act->additional_participants,
-                'work_executor' => $act->work_executor,
-                'hidden_works' => $act->hidden_works,
-                'psd_info' => $act->psd_info,
-                'materials' => $act->materials,
-                'compliance_evidence' => $act->compliance_evidence,
-                'deviations' => $act->deviations,
-                'start_date' => $act->start_date,
-                'end_date' => $act->end_date,
-                'commission_decision' => $act->commission_decision,
-                'next_works' => $act->next_works,
-                'contractor_sign_name' => $act->contractor_sign_name,
-                'contractor_sign' => $act->contractor_sign,
-                'tech_supervisor_sign_name' => $act->tech_supervisor_sign_name,
-                'tech_supervisor_sign' => $act->tech_supervisor_sign,
-                'author_supervisor_sign_name' => $act->author_supervisor_sign_name,
-                'author_supervisor_sign' => $act->author_supervisor_sign,
-                'additional_signs' => $act->additional_signs,
-            ];
-
-            $pdf = new Pdf($templatePath);
-            $result = $pdf->fillForm($fields)
-                ->needAppearances()
-                ->flatten()
-                ->saveAs($pdfPath);
-
-            if (!$result) {
-                abort(500, 'Ошибка генерации PDF: ' . $pdf->getError());
-            }
+            return response()->json(['error' => 'Файл не найден'], 404);
         }
 
-        // Возврат для отображения в браузере
-        return response()->file($pdfPath, [
-            'Content-Type' => 'application/pdf',
-            'Content-Disposition' => 'inline; filename="Акт_просмотр.pdf"',
+        $content = file_get_contents($pdfPath);
+        $base64 = base64_encode($content);
+
+        return response()->json(['base64' => $base64]);
+    }
+
+    // Отдаёт PDF в виде Base64 для подписания (TBS для CMS)
+    public function getPdfHashBase64($id)
+    {
+        $act = HiddenWork::findOrFail($id);
+        $pdfPath = storage_path("app/pdf_outputs/act_{$act->id}.pdf");
+
+        if (!file_exists($pdfPath)) {
+            return response()->json(['error' => 'PDF not found'], 404);
+        }
+
+        $pdfContent = file_get_contents($pdfPath);
+        $base64 = base64_encode($pdfContent);
+
+        return response()->json(['base64' => $base64]);
+    }
+
+    // Принимает .CMS подпись и сохраняет в файл
+    public function receiveCms(Request $request)
+    {
+        $request->validate([
+            'id' => 'required|integer',
+            'cms' => 'required|string'
+        ]);
+
+        $id = $request->input('id');
+        $cms = $request->input('cms');
+
+        $cmsDecoded = base64_decode($cms);
+
+        if ($cmsDecoded === false) {
+            return response()->json(['error' => 'Invalid base64 CMS'], 400);
+        }
+
+        $directory = storage_path("app/pdf_signatures");
+        if (!file_exists($directory)) {
+            mkdir($directory, 0755, true);
+        }
+
+        $fileName = "act_{$id}.cms";
+        $cmsPath = $directory . DIRECTORY_SEPARATOR . $fileName;
+
+        file_put_contents($cmsPath, $cmsDecoded);
+
+        // Скачивание .cms файла клиентом
+        return response()->json([
+            'success' => true,
+            'path' => $cmsPath
         ]);
     }
+
 }

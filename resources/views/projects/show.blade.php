@@ -7,64 +7,89 @@
 
         @if ($role === 'подрядчик')
             <div class="mb-4">
-                <a href="{{ route('acts.create', $passport) }}" class="btn btn-success">Создать акт</a>
+                <a href="{{ route('acts.create', $passport) }}" class="btn btn-success">
+                    <i class="bi bi-plus-lg me-1"></i> Создать акт
+                </a>
             </div>
         @endif
 
         @if (session('success'))
-            <div class="alert alert-success">{{ session('success') }}</div>
+            <div class="alert alert-success alert-dismissible fade show" role="alert">
+                {{ session('success') }}
+                <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Закрыть"></button>
+            </div>
         @endif
         @if (session('error'))
-            <div class="alert alert-danger">{{ session('error') }}</div>
+            <div class="alert alert-danger alert-dismissible fade show" role="alert">
+                {{ session('error') }}
+                <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Закрыть"></button>
+            </div>
         @endif
-
-        <h4>Список актов</h4>
         @if(auth()->user()->role === 'подрядчик')
             <div class="mb-3">
-                <form method="POST" action="{{ route('projects.invite', $passport) }}">
+                <form method="POST" action="{{ route('projects.invite', $passport) }}" class="row g-2 align-items-end">
                     @csrf
-                    <input name="bin" required>
-                    <select name="role" required>
-                        <option value="технадзор">Технический надзор</option>
-                        <option value="авторнадзор">Авторский надзор</option>
-                    </select>
-                    <button type="submit">Пригласить</button>
+                    <div class="col-sm-4">
+                        <label for="bin" class="form-label mb-1">БИН приглашаемой организации</label>
+                        <input name="bin" required id="bin" class="form-control" placeholder="Введите БИН">
+                    </div>
+                    <div class="col-sm-4">
+                        <label for="role" class="form-label mb-1">Роль</label>
+                        <select name="role" id="role" class="form-select" required>
+                            <option value="" disabled selected>Выберите роль</option>
+                            <option value="технадзор">Технический надзор</option>
+                            <option value="авторнадзор">Авторский надзор</option>
+                        </select>
+                    </div>
+                    <div class="col-sm-4">
+                        <button type="submit" class="btn btn-outline-primary w-100">
+                            <i class="bi bi-person-plus me-1"></i> Пригласить
+                        </button>
+                    </div>
                 </form>
             </div>
         @endif
+        <h4 class="mb-3">Список актов</h4>
+
+
+
         @if ($acts->isEmpty())
-            <div class="alert alert-info">Для этого объекта ещё нет актов.</div>
+            <div class="alert alert-info my-4">
+                Для этого объекта ещё нет актов.
+            </div>
         @else
-            <table class="table table-bordered">
-                <thead>
-                <tr>
-                    <th>№ акта</th>
-                    <th>Дата</th>
-                    <th>Тип</th>
-                    <th>Подпись</th>
-                </tr>
-                </thead>
-                <tbody>
-                @foreach ($acts as $act)
+            <div class="table-responsive mt-3">
+                <table class="table table-bordered align-middle">
+                    <thead class="table-light">
                     <tr>
-                        <td>{{ $act->act_number }}</td>
-                        <td>{{ $act->act_date }}</td>
-                        <td>{{ $act->type ?? '-' }}</td>
-                        <td>
-                            <button class="btn btn-outline-primary btn-sm" onclick="signAct({{ $act->id }})">
-                                <i class="bi bi-pen"></i> Подписать и скачать
-                            </button>
-
-                            <a href="{{ route('pdf.view', $act->id) }}" class="btn btn-outline-secondary btn-sm" target="_blank">
-                                <i class="bi bi-eye"></i> Просмотреть
-                            </a>
-
-                            <div id="output-{{ $act->id }}" class="small text-muted mt-1"></div>
-                        </td>
+                        <th scope="col">№ акта</th>
+                        <th scope="col">Дата</th>
+                        <th scope="col">Тип</th>
+                        <th scope="col">Подпись</th>
                     </tr>
-                @endforeach
-                </tbody>
-            </table>
+                    </thead>
+                    <tbody>
+                    @foreach ($acts as $act)
+                        <tr>
+                            <td>{{ $act->act_number }}</td>
+                            <td>{{ $act->act_date }}</td>
+                            <td>{{ $act->type ?? '-' }}</td>
+                            <td>
+                                <div class="d-flex gap-2 flex-wrap">
+                                    <button type="button" class="btn btn-outline-primary btn-sm" onclick="signAct({{ $act->id }})">
+                                        <i class="bi bi-pen me-1"></i> Подписать и скачать
+                                    </button>
+                                    <a href="{{ route('pdf.view', $act->id) }}" class="btn btn-outline-secondary btn-sm" target="_blank">
+                                        <i class="bi bi-eye me-1"></i> Просмотреть
+                                    </a>
+                                </div>
+                                <div id="output-{{ $act->id }}" class="small text-muted mt-1"></div>
+                            </td>
+                        </tr>
+                    @endforeach
+                    </tbody>
+                </table>
+            </div>
         @endif
     </div>
 
@@ -81,81 +106,72 @@
         })();
     </script>
     <script src="/js/ncalayer-client.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/axios/dist/axios.min.js"></script>
+
+
     <script>
         async function signAct(actId) {
-            const outputEl = document.getElementById('output-' + actId);
-            const setStatus = txt => outputEl.textContent = txt;
+            const output = document.getElementById('output-' + actId);
+            const setStatus = msg => output.textContent = msg;
 
             try {
-                setStatus('📥 Запрос хэша PDF…');
+                setStatus('📥 Загружаем PDF...');
+                const base64pdf = await fetch(`/pdf/base64/${actId}`)
+                    .then(r => r.json())
+                    .then(data => data.base64); // должна быть именно строка вида "JVBERi0xL..."
 
-                // Шаг 1: Получение Base64-хэша PDF с сервера
-                const res = await fetch(`/pdf/hash/${actId}`);
-                if (!res.ok) throw new Error(await res.text());
+                setStatus('🔌 Подключение к NCALayer...');
+                const ncl = new NCALayerClient();
+                await ncl.connect();
 
-                const data = await res.json();
-                const hashBase64 = data.base64hash;
+                const tokens = await ncl.getActiveTokens();
+                const storageType = tokens[0] || NCALayerClient.fileStorageType;
 
-                // Шаг 2: Инициализация клиента NCALayer
-                const logo = await fetch('/images/nca-logo.png')
-                    .then(res => res.blob())
-                    .then(blob => new Promise(resolve => {
-                        const reader = new FileReader();
-                        reader.onload = () => resolve(reader.result.split(',')[1]); // base64
-                        reader.readAsDataURL(blob);
-                    }));
-
-                const nclSignClient = new NCALayerClient('wss://127.0.0.1:13579');
-                nclSignClient.setLogoForBasicsSign(logo); // ← base64 строка изображения
-                nclSignClient.onerror = console.error;
-                await nclSignClient.connect();
-
-                setStatus('✍️ Подписание хэша PDF…');
-
-                // Шаг 3: Подпись хэша
-                const cms = await nclSignClient.createCAdESFromBase64Hash(
-                    "PKCS12",
-                    hashBase64,
-                    "SIGNATURE"
+                setStatus('✍️ Подпись документа...');
+                const cms = await ncl.createCMSSignatureFromBase64(
+                    storageType,
+                    base64pdf,
+                    'SIGNATURE',
+                    true,
                 );
 
-                // Шаг 4: Отправка CMS на сервер
-                setStatus('📤 Отправка подписи…');
+                console.log('CMS:', cms.slice(0, 100));
 
-                const form = new FormData();
-                form.append('cms', cms);
-                form.append('id', actId);
+                setStatus('📤 Отправка подписи на сервер...');
+                await sendCms(actId, cms); // ✅ здесь вызываем
 
-                const csrf = document.querySelector('meta[name="csrf-token"]').getAttribute('content');
-
-                const resp = await fetch('/pdf/sign', {
-                    method: 'POST',
-                    body: form,
-                    headers: {
-                        'X-CSRF-TOKEN': csrf
-                    }
-                });
-
-
-                if (!resp.ok) throw new Error(await resp.text());
-
-                // Шаг 5: Получение и скачивание подписанного PDF
-                const blob = await resp.blob();
-                const url = window.URL.createObjectURL(blob);
-                const link = document.createElement('a');
-                link.href = url;
-                link.download = `Акт_подписанный_${actId}.pdf`;
-                document.body.appendChild(link);
-                link.click();
-                link.remove();
-                window.URL.revokeObjectURL(url);
-
-                setStatus('✅ Подписано и загружено!');
+                setStatus('✅ Успешно подписано!');
             } catch (err) {
                 console.error(err);
                 setStatus('❌ Ошибка: ' + err.message);
             }
         }
+
+        async function sendCms(actId, cms) {
+            const formData = new FormData();
+            formData.append('id', actId);
+            formData.append('cms', cms);
+
+            const csrfToken = document.querySelector('meta[name="csrf-token"]').getAttribute('content');
+
+            try {
+                const response = await fetch('/pdf/sign', {
+                    method: 'POST',
+                    body: formData,
+                    headers: {
+                        'X-CSRF-TOKEN': csrfToken
+                        // НЕ добавляй Content-Type, браузер сам установит boundary для multipart/form-data
+                    }
+                });
+
+                if (!response.ok) throw new Error('Ошибка подписи');
+                const result = await response.json();
+                console.log('✅ Успешно', result);
+            } catch (err) {
+                console.error('❌ Ошибка:', err);
+            }
+        }
     </script>
+
 
 @endsection
