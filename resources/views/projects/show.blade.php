@@ -79,12 +79,20 @@
                                     <button type="button" class="btn btn-outline-primary btn-sm" onclick="signAct({{ $act->id }})">
                                         <i class="bi bi-pen me-1"></i> Подписать и скачать
                                     </button>
+
                                     <a href="{{ route('pdf.view', $act->id) }}" class="btn btn-outline-secondary btn-sm" target="_blank">
                                         <i class="bi bi-eye me-1"></i> Просмотреть
                                     </a>
+
+                                    @if (!empty($cmsFiles[$act->id]) && $cmsFiles[$act->id])
+                                        <a href="{{ route('cms.download', $act->id) }}" class="btn btn-outline-success btn-sm">
+                                            <i class="bi bi-download me-1"></i> Скачать CMS
+                                        </a>
+                                    @endif
                                 </div>
                                 <div id="output-{{ $act->id }}" class="small text-muted mt-1"></div>
                             </td>
+
                         </tr>
                     @endforeach
                     </tbody>

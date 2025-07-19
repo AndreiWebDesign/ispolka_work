@@ -65,6 +65,7 @@ Route::get('/pdf/base64/{id}', [PdfActController::class, 'getBase64']);
 
 Route::get('/cms-check', [CmsCheckController::class, 'index'])->name('cms.check');
 Route::post('/cms-check', [CmsCheckController::class, 'extract'])->name('cms.extract');
+Route::get('/cms/download/{id}', [PdfActController::class, 'downloadCms'])->name('cms.download');
 
 
 
