@@ -30,12 +30,9 @@ class HiddenWork extends Model
         'commission_decision',
         'next_works',
         'contractor_sign_name',
-        'contractor_sign',
         'tech_supervisor_sign_name',
-        'tech_supervisor_sign',
         'author_supervisor_sign_name',
         'author_supervisor_sign',
-        'additional_signs',
         'type',
     ];
 

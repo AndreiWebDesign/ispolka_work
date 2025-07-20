@@ -46,15 +46,14 @@ class User extends Authenticatable
         ];
     }
 
-    public function projects()
-    {
-        return $this->belongsToMany(Project::class, 'project_user_roles')->withPivot('role');
-    }
     public function passports()
     {
         return $this->belongsToMany(Passport::class, 'project_user_roles', 'user_id', 'passport_id')
             ->withPivot('role')
             ->withTimestamps();
     }
+
+
+
 
 }

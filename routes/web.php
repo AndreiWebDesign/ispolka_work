@@ -9,7 +9,7 @@ use App\Http\Controllers\QrController;
 use App\Http\Controllers\NotificationController;
 
 use App\Http\Controllers\ExecutiveDocsController;
-use App\Http\Controllers\CmsCheckController;
+use App\Http\Controllers\CmsController;
 
 
 
@@ -47,6 +47,13 @@ Route::middleware(['auth'])->group(function () {
         Route::post('/projects/{passport}/acts', [ActController::class, 'store'])->name('acts.store');
         Route::get('/acts/{id}/pdf', [PdfActController::class, 'download'])->name('acts.pdf');
         Route::get('/acts/{id}', [PdfActController::class, 'view'])->name('acts.show');
+        Route::get('/cms/view/{filename}', [App\Http\Controllers\CmsController::class, 'viewCms'])
+            ->name('cms.view');
+        Route::get('/cms/download/{id}', [CmsController::class, 'download'])->name('cms.download');
+        Route::get('/projects/{passport}/acts/select', [ActController::class, 'select'])->name('acts.select');
+        Route::get('/pdf/base64/{id}', [PdfActController::class, 'getBase64']);
+        Route::post('/pdf/sign', [PdfActController::class, 'sign']);
+
     });
 });
 
@@ -57,15 +64,7 @@ Route::post('login', [AuthController::class, 'login']);
 Route::get('registration', [AuthController::class, 'registration'])->name('register');
 Route::post('post-registration', [AuthController::class, 'postRegistration'])->name('register.post');
 
-Route::get('/pdf/hash/{id}', [PdfActController::class, 'getHash']);
-Route::post('/pdf/sign', [PdfActController::class, 'sign']);
-Route::get('/qr/{id}', [QrController::class, 'show'])->name('qr.xml.view');
-Route::get('/download-cms/{id}/{role}', [PdfActController::class, 'downloadCms'])->name('download.cms');
-Route::get('/pdf/base64/{id}', [PdfActController::class, 'getBase64']);
 
-Route::get('/cms-check', [CmsCheckController::class, 'index'])->name('cms.check');
-Route::post('/cms-check', [CmsCheckController::class, 'extract'])->name('cms.extract');
-Route::get('/cms/download/{id}', [PdfActController::class, 'downloadCms'])->name('cms.download');
 
 
 

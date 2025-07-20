@@ -38,9 +38,27 @@ class ObjectAndProjectController extends Controller
 
     public function index()
     {
-        $passports = auth()->user()->passports()->latest()->get();
+        $user = auth()->user();
+
+        // 1. Паспорта, созданные этим пользователем (он подрядчик)
+        $ownPassports = Passport::where('user_id', $user->id);
+
+        // 2. Паспорта, куда он приглашён (технадзор/авторнадзор)
+        $invitedPassports = $user->passports(); // если метод определён в модели
+
+        // Если нет метода -> добавим raw-запрос:
+        $invitedIds = \DB::table('project_user_roles')
+            ->where('user_id', $user->id)
+            ->pluck('passport_id');
+
+        $invitedPassports = Passport::whereIn('id', $invitedIds);
+
+        // Объединяем
+        $passports = $ownPassports->union($invitedPassports)->get();
+
         return view('projects.index', compact('passports'));
     }
+
 
     public function create()
     {
@@ -93,8 +111,16 @@ class ObjectAndProjectController extends Controller
             $role = 'подрядчик';
         }
 
-        return view('projects.show', compact('passport', 'acts', 'role'));
+        // ➕ Проверка CMS файлов
+        $cmsFiles = [];
+        foreach ($acts as $act) {
+            $cmsPath = storage_path("app/cms/act_{$act->id}.cms");
+            $cmsFiles[$act->id] = file_exists($cmsPath);
+        }
+
+        return view('projects.show', compact('passport', 'acts', 'role', 'cmsFiles'));
     }
+
 
     // ==== ПРОЕКТЫ ====
 

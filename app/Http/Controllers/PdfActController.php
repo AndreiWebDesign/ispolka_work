@@ -24,26 +24,26 @@ class PdfActController extends Controller
     }
 
     public function sign(Request $request)
-{
-    $request->validate([
-        'id' => 'required|integer|exists:hidden_works,id',
-        'cms' => 'required|string',
-    ]);
+    {
+        $request->validate([
+            'id' => 'required|integer|exists:hidden_works,id',
+            'cms' => 'required|string',
+        ]);
 
-    $act = HiddenWork::findOrFail($request->id);
-    $cmsBase64 = $request->input('cms');
+        $act = HiddenWork::findOrFail($request->id);
+        $cmsBase64 = $request->input('cms');
 
-    // Декодируй CMS и сохрани, например:
-    $cmsBinary = base64_decode($cmsBase64);
-    $cmsPath = storage_path("app/cms/act_{$act->id}.cms");
-    file_put_contents($cmsPath, $cmsBinary);
+        // Декодируй CMS и сохрани, например:
+        $cmsBinary = base64_decode($cmsBase64);
+        $cmsPath = storage_path("app/cms/act_{$act->id}.cms");
+        file_put_contents($cmsPath, $cmsBinary);
 
-    // Возвращаем успешный ответ
-    return response()->json([
-        'message' => 'CMS сохранён успешно',
-        'cms_path' => $cmsPath
-    ]);
-}
+        // Возвращаем успешный ответ
+        return response()->json([
+            'message' => 'CMS сохранён успешно',
+            'cms_path' => $cmsPath
+        ]);
+    }
     public function signPdf(Request $request)
     {
         $id = $request->input('id');
@@ -164,11 +164,8 @@ class PdfActController extends Controller
                 'commission_decision' => $act->commission_decision,
                 'next_works' => $act->next_works,
                 'contractor_sign_name' => $act->contractor_sign_name,
-                'contractor_sign' => $act->contractor_sign,
                 'tech_supervisor_sign_name' => $act->tech_supervisor_sign_name,
-                'tech_supervisor_sign' => $act->tech_supervisor_sign,
                 'author_supervisor_sign_name' => $act->author_supervisor_sign_name,
-                'author_supervisor_sign' => $act->author_supervisor_sign,
                 'additional_signs' => $act->additional_signs,
             ];
 

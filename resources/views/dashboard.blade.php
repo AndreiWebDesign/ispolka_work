@@ -31,30 +31,32 @@
                     <span class="fw-semibold">Уведомления</span>
                 </div>
                 <ul class="list-group list-group-flush" style="max-height: 350px; overflow-y: auto;">
-                    <li class="list-group-item">
-                        <span class="badge bg-success me-2">Новое</span>
-                        Акт №123 принят комиссией.
-                        <small class="text-muted d-block">5 минут назад</small>
-                    </li>
-                    <li class="list-group-item">
-                        <span class="badge bg-warning text-dark me-2">В обработке</span>
-                        Акт №124 ожидает подписи.
-                        <small class="text-muted d-block">1 час назад</small>
-                    </li>
-                    <li class="list-group-item">
-                        <span class="badge bg-danger me-2">Отклонено</span>
-                        Акт №122 отклонен (ошибка в документации).
-                        <small class="text-muted d-block">Вчера</small>
-                    </li>
-                    <li class="list-group-item">
-                        <span class="badge bg-info text-dark me-2">Инфо</span>
-                        Добавлен новый объект: ЖК "Арман".
-                        <small class="text-muted d-block">2 дня назад</small>
-                    </li>
-                    <!-- Еще уведомления -->
+                    @forelse(auth()->user()->notifications->take(10) as $notification)
+                        <li class="list-group-item">
+                    <span class="badge
+                        @if($notification->read_at) bg-secondary
+                        @else bg-success
+                        @endif
+                        me-2">
+                        {{ $notification->read_at ? 'Прочитано' : 'Новое' }}
+                    </span>
+
+                            {{-- Пример вывода текста уведомления --}}
+                            {{ $notification->data['message'] ?? 'Уведомление' }}
+
+                            <small class="text-muted d-block">
+                                {{ $notification->created_at->diffForHumans() }}
+                            </small>
+
+                            <a href="{{ route('notifications.show', $notification->id) }}" class="stretched-link"></a>
+                        </li>
+                    @empty
+                        <li class="list-group-item text-muted">Нет уведомлений</li>
+                    @endforelse
                 </ul>
             </div>
         </div>
+
     </div>
 
     @push('scripts')

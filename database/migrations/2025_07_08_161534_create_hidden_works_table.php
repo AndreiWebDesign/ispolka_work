@@ -36,6 +36,8 @@ return new class extends Migration
             $table->string('author_supervisor_sign_name')->nullable();
             $table->string('author_supervisor_sign')->nullable();
             $table->text('additional_signs')->nullable();
+            $table->string('type')->nullable(); // Добавьте в `hidden_works`
+
             $table->timestamps();
         });
     }

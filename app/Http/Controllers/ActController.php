@@ -10,23 +10,42 @@ use mikehaertl\pdftk\Pdf;
 
 class ActController extends Controller
 {
-    // Форма создания акта для выбранного объекта
-    public function create(Passport $passport)
+    public function select(Passport $passport)
     {
-        // Проверка: только владелец объекта может создавать акты
+        $actTypes = [
+            'hidden_works' => 'Акт скрытых работ',
+            'intermediate_accept' => 'Акт промежуточной приемки ответственных конструкций',
+            // ... остальные типы
+        ];
+
+        return view('acts.select', compact('passport', 'actTypes'));
+    }
+    // Форма создания акта для выбранного объекта
+    public function create(Passport $passport, Request $request)
+    {
         if ($passport->user_id !== auth()->id()) {
             abort(403, 'Доступ запрещён');
         }
 
+        $type = $request->query('type');
+
+        $validTypes = ['hidden_works', 'intermediate_accept', 'type_3']; // перечисли все типы
+        if (!in_array($type, $validTypes)) {
+            abort(404, 'Неверный тип акта');
+        }
+
         $maxActNumber = HiddenWork::where('passport_id', $passport->id)->max('act_number');
         $nextActNumber = $maxActNumber ? $maxActNumber + 1 : 1;
-        return view('acts.create', compact('passport', 'nextActNumber'));
+
+        return view('acts.create', compact('passport', 'nextActNumber', 'type'));
     }
+
 
     // Сохранение акта для объекта
     public function store(Request $request, Passport $passport)
     {
         $validated = $request->validate([
+            'type' => 'required|string',
             'act_number' => 'required|string',
             'act_date' => 'required|date',
             'object_name' => 'required|string',
@@ -52,12 +71,8 @@ class ActController extends Controller
 
             // Подписи
             'contractor_sign_name' => 'required|string',
-            'contractor_sign' => 'required|string',
             'tech_supervisor_sign_name' => 'required|string',
-            'tech_supervisor_sign' => 'required|string',
             'author_supervisor_sign_name' => 'nullable|string',
-            'author_supervisor_sign' => 'nullable|string',
-            'additional_signs' => 'nullable|string',
         ]);
 
         $act = HiddenWork::create($validated);
@@ -86,12 +101,8 @@ class ActController extends Controller
             'commission_decision' => $act->commission_decision,
             'next_works' => $act->next_works,
             'contractor_sign_name' => $act->contractor_sign_name,
-            'contractor_sign' => $act->contractor_sign,
             'tech_supervisor_sign_name' => $act->tech_supervisor_sign_name,
-            'tech_supervisor_sign' => $act->tech_supervisor_sign,
             'author_supervisor_sign_name' => $act->author_supervisor_sign_name,
-            'author_supervisor_sign' => $act->author_supervisor_sign,
-            'additional_signs' => $act->additional_signs,
         ];
 
         $pdf = new Pdf($templatePath);

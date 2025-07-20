@@ -96,4 +96,4 @@
 </script>
 </body>
 </html>
-<?php /**PATH /var/www/ispolka/resources/views/pdfsign/index.blade.php ENDPATH**/ ?>
+<?php /**PATH /var/www/ispolka/resources/views/pdfsign/view.blade.php ENDPATH**/ ?>

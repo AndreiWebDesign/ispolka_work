@@ -7,7 +7,7 @@
 
         @if ($role === 'подрядчик')
             <div class="mb-4">
-                <a href="{{ route('acts.select', $passport) }}" class="btn btn-success">
+                <a href="{{ route('acts.create', $passport) }}" class="btn btn-success">
                     <i class="bi bi-plus-lg me-1"></i> Создать акт
                 </a>
             </div>
@@ -58,82 +58,46 @@
                 Для этого объекта ещё нет актов.
             </div>
         @else
-            @php
-                $groupedActs = $acts->groupBy('type');
+            <div class="table-responsive mt-3">
+                <table class="table table-bordered align-middle">
+                    <thead class="table-light">
+                    <tr>
+                        <th scope="col">№ акта</th>
+                        <th scope="col">Дата</th>
+                        <th scope="col">Тип</th>
+                        <th scope="col">Подпись</th>
+                    </tr>
+                    </thead>
+                    <tbody>
+                    @foreach ($acts as $act)
+                        <tr>
+                            <td>{{ $act->act_number }}</td>
+                            <td>{{ $act->act_date }}</td>
+                            <td>{{ $act->type ?? '-' }}</td>
+                            <td>
+                                <div class="d-flex gap-2 flex-wrap">
+                                    <button type="button" class="btn btn-outline-primary btn-sm" onclick="signAct({{ $act->id }})">
+                                        <i class="bi bi-pen me-1"></i> Подписать и скачать
+                                    </button>
 
-                $typeNames = [
-                    'hidden_works' => 'Акты скрытых работ',
-                    'some_other_type' => 'Другой тип',
-                    null => 'Без типа',
-                ];
-            @endphp
+                                    <a href="{{ route('pdf.view', $act->id) }}" class="btn btn-outline-secondary btn-sm" target="_blank">
+                                        <i class="bi bi-eye me-1"></i> Просмотреть
+                                    </a>
 
+                                    @if (!empty($cmsFiles[$act->id]) && $cmsFiles[$act->id])
+                                        <a href="{{ route('cms.download', $act->id) }}" class="btn btn-outline-success btn-sm">
+                                            <i class="bi bi-download me-1"></i> Скачать CMS
+                                        </a>
+                                    @endif
+                                </div>
+                                <div id="output-{{ $act->id }}" class="small text-muted mt-1"></div>
+                            </td>
 
-            <div class="accordion" id="actsAccordion">
-                @foreach ($groupedActs as $type => $group)
-                    <div class="accordion-item">
-                        <h2 class="accordion-header" id="heading-{{ Str::slug($type) }}">
-                            <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse"
-                                    data-bs-target="#collapse-{{ Str::slug($type) }}" aria-expanded="false"
-                                    aria-controls="collapse-{{ Str::slug($type) }}">
-                                {{ $typeNames[$type] ?? $type }} ({{ $group->count() }} шт.)
-
-                            </button>
-                        </h2>
-                        <div id="collapse-{{ Str::slug($type) }}" class="accordion-collapse collapse"
-                             aria-labelledby="heading-{{ Str::slug($type) }}" data-bs-parent="#actsAccordion">
-                            <div class="accordion-body p-0">
-                                <table class="table table-bordered align-middle mb-0">
-                                    <thead class="table-light">
-                                    <tr>
-                                        <th scope="col">№ акта</th>
-                                        <th scope="col">Дата</th>
-                                        <th scope="col">Тип</th>
-                                        <th scope="col">Подпись</th>
-                                    </tr>
-                                    </thead>
-                                    <tbody>
-                                    @foreach ($group as $act)
-                                        <tr>
-                                            <td>{{ $act->act_number }}</td>
-                                            <td>{{ $act->act_date }}</td>
-                                            <td>{{ $typeNames[$act->type] ?? $act->type }}</td>
-                                            <td>
-                                                <div class="d-flex gap-2 flex-wrap">
-                                                    @if (empty($cmsFiles[$act->id]) || !$cmsFiles[$act->id])
-                                                        <button type="button" class="btn btn-outline-primary btn-sm" onclick="signAct({{ $act->id }})">
-                                                            <i class="bi bi-pen me-1"></i> Подписать и скачать
-                                                        </button>
-                                                    @endif
-
-                                                    <a href="{{ route('pdf.view', $act->id) }}" class="btn btn-outline-secondary btn-sm" target="_blank">
-                                                        <i class="bi bi-eye me-1"></i> Просмотреть
-                                                    </a>
-
-                                                    @if (!empty($cmsFiles[$act->id]) && $cmsFiles[$act->id])
-                                                        <a href="{{ route('cms.download', $act->id) }}" class="btn btn-outline-success btn-sm">
-                                                            <i class="bi bi-download me-1"></i> Скачать CMS
-                                                        </a>
-
-                                                        <a href="{{ route('cms.view', $act->id) }}" class="btn btn-outline-info btn-sm" target="_blank">
-                                                            <i class="bi bi-shield-check me-1"></i> Проверить подпись
-                                                        </a>
-                                                    @endif
-
-                                                    <div id="output-{{ $act->id }}" class="small text-muted mt-1"></div>
-                                                </div>
-                                            </td>
-
-                                        </tr>
-                                    @endforeach
-                                    </tbody>
-                                </table>
-                            </div>
-                        </div>
-                    </div>
-                @endforeach
+                        </tr>
+                    @endforeach
+                    </tbody>
+                </table>
             </div>
-
         @endif
     </div>
 

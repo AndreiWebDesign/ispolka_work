@@ -10,7 +10,7 @@ class PassportController extends Controller
     // Список паспортов только текущего пользователя
     public function index()
     {
-        $passports = auth()->user()->passports()->latest()->get();
+        $passports = auth()->user()->projects()->latest()->get();
         return view('projects.index', compact('passports'));
     }
 
