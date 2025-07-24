@@ -52,4 +52,34 @@ class Passport extends Model
     {
         return $this->hasMany(ProjectInvitation::class, 'passport_id');
     }
+
+    public function intermediateAccepts()
+    {
+        return $this->hasMany(\App\Models\IntermediateAccept::class);
+    }
+    public function acts()
+    {
+        $hiddenWorks = $this->hiddenWorks;
+        $intermediateAccepts = $this->intermediateAccepts;
+
+        return $hiddenWorks->concat($intermediateAccepts);
+    }
+    public function getActsAttribute()
+    {
+        $hiddenWorks = $this->hiddenWorks->map(function ($item) {
+            $item->act_type = 'hidden_work'; // или 'hidden'
+            return $item;
+        });
+
+        $intermediateAccepts = $this->intermediateAccepts->map(function ($item) {
+            $item->act_type = 'intermediate_accept'; // как в БД
+            return $item;
+        });
+
+        return $hiddenWorks
+            ->concat($intermediateAccepts)
+            ->sortBy('act_date')
+            ->values();
+    }
+
 }

@@ -5,29 +5,62 @@
   </component>
   <component name="ChangeListManager">
     <list default="true" id="52d24100-70ec-4410-bb3e-4821f146e503" name="Changes" comment="LARAVEL">
-      <change afterPath="$PROJECT_DIR$/app/Http/Controllers/CmsController.php" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/resources/views/acts/select.blade.php" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/resources/views/acts/templates/hidden_works.blade.php" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/resources/views/acts/templates/intermediate_accept.blade.php" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/resources/views/cms/result.blade.php" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/resources/views/cms/view.blade.php" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/resources/views/projects/1" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/app/Http/Controllers/ActSignatureController.php" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/app/Models/IntermediateAccept.php" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/app/Models/PrilozeniyeGotovnLift.php" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/app/Models/PrilozeniyeGotovnPodmostei.php" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/app/Models/Prilozeniye_21.php" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/app/Models/Prilozeniye_22.php" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/app/Models/Prilozeniye_23.php" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/app/Models/Prilozeniye_24.php" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/app/Models/Prilozeniye_26.php" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/app/Models/Prilozeniye_27.php" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/app/Models/Prilozeniye_28.php" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/app/Models/Prilozeniye_29.php" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/app/Models/Prilozeniye_30.php" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/app/Models/Prilozeniye_31.php" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/app/Models/Prilozeniye_32.php" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/app/Models/Prilozeniye_67.php" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/app/Models/Prilozeniye_72.php" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/app/Models/Prilozeniye_73.php" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/app/Models/Prilozeniye_74.php" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/app/Models/Prilozeniye_75.php" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/config/act_templates.php" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/resources/views/acts/signatures.blade.php" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/resources/views/acts/templates/Prilozeniye_21.blade.php" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/resources/views/acts/templates/prilozeniye_22.blade.php" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/resources/views/acts/templates/prilozeniye_23.blade.php" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/resources/views/acts/templates/prilozeniye_24.blade.php" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/resources/views/acts/templates/prilozeniye_26.blade.php" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/resources/views/acts/templates/prilozeniye_27.blade.php" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/resources/views/acts/templates/prilozeniye_28.blade.php" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/resources/views/acts/templates/prilozeniye_29.blade.php" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/resources/views/acts/templates/prilozeniye_30.blade.php" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/resources/views/acts/templates/prilozeniye_31.blade.php" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/resources/views/acts/templates/prilozeniye_32.blade.php" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/resources/views/acts/templates/prilozeniye_67.blade.php" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/resources/views/acts/templates/prilozeniye_72.blade.php" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/resources/views/acts/templates/prilozeniye_73.blade.php" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/resources/views/acts/templates/prilozeniye_74.blade.php" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/resources/views/acts/templates/prilozeniye_75.blade.php" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/resources/views/acts/templates/prilozeniye_gotovn_lift.blade.php" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/resources/views/acts/templates/prilozeniye_gotovn_podmostei.blade.php" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/app/Http/Controllers/ActController.php" beforeDir="false" afterPath="$PROJECT_DIR$/app/Http/Controllers/ActController.php" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/app/Http/Controllers/CmsCheckController.php" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/app/Http/Controllers/CmsController.php" beforeDir="false" afterPath="$PROJECT_DIR$/app/Http/Controllers/CmsController.php" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/app/Http/Controllers/ObjectAndProjectController.php" beforeDir="false" afterPath="$PROJECT_DIR$/app/Http/Controllers/ObjectAndProjectController.php" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/app/Http/Controllers/PassportController.php" beforeDir="false" afterPath="$PROJECT_DIR$/app/Http/Controllers/PassportController.php" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/app/Http/Controllers/PdfActController.php" beforeDir="false" afterPath="$PROJECT_DIR$/app/Http/Controllers/PdfActController.php" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/app/Models/ActSignature.php" beforeDir="false" afterPath="$PROJECT_DIR$/app/Models/ActSignature.php" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/app/Models/HiddenWork.php" beforeDir="false" afterPath="$PROJECT_DIR$/app/Models/HiddenWork.php" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/app/Models/User.php" beforeDir="false" afterPath="$PROJECT_DIR$/app/Models/User.php" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/database/migrations/2025_07_08_161534_create_hidden_works_table.php" beforeDir="false" afterPath="$PROJECT_DIR$/database/migrations/2025_07_08_161534_create_hidden_works_table.php" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/app/Models/Passport.php" beforeDir="false" afterPath="$PROJECT_DIR$/app/Models/Passport.php" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/resources/views/acts/create.blade.php" beforeDir="false" afterPath="$PROJECT_DIR$/resources/views/acts/create.blade.php" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/resources/views/cms_check.blade.php" beforeDir="false" afterPath="$PROJECT_DIR$/resources/views/cms_card.blade.php" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/resources/views/dashboard.blade.php" beforeDir="false" afterPath="$PROJECT_DIR$/resources/views/dashboard.blade.php" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/resources/views/acts/select.blade.php" beforeDir="false" afterPath="$PROJECT_DIR$/resources/views/acts/select.blade.php" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/resources/views/acts/templates/hidden_works.blade.php" beforeDir="false" afterPath="$PROJECT_DIR$/resources/views/acts/templates/hidden_works.blade.php" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/resources/views/acts/templates/intermediate_accept.blade.php" beforeDir="false" afterPath="$PROJECT_DIR$/resources/views/acts/templates/intermediate_accept.blade.php" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/resources/views/cms/view.blade.php" beforeDir="false" afterPath="$PROJECT_DIR$/resources/views/cms/view.blade.php" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/resources/views/layouts/app.blade.php" beforeDir="false" afterPath="$PROJECT_DIR$/resources/views/layouts/app.blade.php" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/resources/views/projects/show.blade.php" beforeDir="false" afterPath="$PROJECT_DIR$/resources/views/projects/show.blade.php" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/routes/web.php" beforeDir="false" afterPath="$PROJECT_DIR$/routes/web.php" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/storage/framework/views/44a6f0fd50ffc65f33257187a9fcf8d8.php" beforeDir="false" afterPath="$PROJECT_DIR$/storage/framework/views/44a6f0fd50ffc65f33257187a9fcf8d8.php" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/storage/framework/views/74073e0c5334e487dac790444db907a8.php" beforeDir="false" afterPath="$PROJECT_DIR$/storage/framework/views/74073e0c5334e487dac790444db907a8.php" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -183,33 +216,35 @@
     <option name="hideEmptyMiddlePackages" value="true" />
     <option name="showLibraryContents" value="true" />
   </component>
-  <component name="PropertiesComponent"><![CDATA[{
-  "keyToString": {
-    "ASKED_SHARE_PROJECT_CONFIGURATION_FILES": "true",
-    "ModuleVcsDetector.initialDetectionPerformed": "true",
-    "RunOnceActivity.ShowReadmeOnStart": "true",
-    "RunOnceActivity.TerminalTabsStorage.copyFrom.TerminalArrangementManager": "true",
-    "RunOnceActivity.git.unshallow": "true",
-    "disable.download.node.interpreter.editor.notification": "true",
-    "git-widget-placeholder": "master",
-    "ignore.virus.scanning.warn.message": "true",
-    "last_opened_file_path": "P:/PHPSTORM/Проекты/ispolka/resources/views/cms",
-    "node.js.detected.package.eslint": "true",
-    "node.js.detected.package.tslint": "true",
-    "node.js.selected.package.eslint": "(autodetect)",
-    "node.js.selected.package.tslint": "(autodetect)",
-    "nodejs_package_manager_path": "npm",
-    "settings.editor.selected.configurable": "org.jetbrains.plugins.github.ui.GithubSettingsConfigurable",
-    "ts.external.directory.path": "P:\\PHPSTORM\\PhpStorm 2025.1.3\\plugins\\javascript-plugin\\jsLanguageServicesImpl\\external",
-    "vue.rearranger.settings.migration": "true"
+  <component name="PropertiesComponent">{
+  &quot;keyToString&quot;: {
+    &quot;ASKED_SHARE_PROJECT_CONFIGURATION_FILES&quot;: &quot;true&quot;,
+    &quot;ModuleVcsDetector.initialDetectionPerformed&quot;: &quot;true&quot;,
+    &quot;RunOnceActivity.ShowReadmeOnStart&quot;: &quot;true&quot;,
+    &quot;RunOnceActivity.TerminalTabsStorage.copyFrom.TerminalArrangementManager&quot;: &quot;true&quot;,
+    &quot;RunOnceActivity.git.unshallow&quot;: &quot;true&quot;,
+    &quot;disable.download.node.interpreter.editor.notification&quot;: &quot;true&quot;,
+    &quot;git-widget-placeholder&quot;: &quot;master&quot;,
+    &quot;ignore.virus.scanning.warn.message&quot;: &quot;true&quot;,
+    &quot;last_opened_file_path&quot;: &quot;P:/PHPSTORM/Проекты/ispolka/resources/views/acts/templates&quot;,
+    &quot;node.js.detected.package.eslint&quot;: &quot;true&quot;,
+    &quot;node.js.detected.package.tslint&quot;: &quot;true&quot;,
+    &quot;node.js.selected.package.eslint&quot;: &quot;(autodetect)&quot;,
+    &quot;node.js.selected.package.tslint&quot;: &quot;(autodetect)&quot;,
+    &quot;nodejs_package_manager_path&quot;: &quot;npm&quot;,
+    &quot;settings.editor.selected.configurable&quot;: &quot;org.jetbrains.plugins.github.ui.GithubSettingsConfigurable&quot;,
+    &quot;ts.external.directory.path&quot;: &quot;P:\\PHPSTORM\\PhpStorm 2025.1.3\\plugins\\javascript-plugin\\jsLanguageServicesImpl\\external&quot;,
+    &quot;vue.rearranger.settings.migration&quot;: &quot;true&quot;
   }
-}]]></component>
+}</component>
   <component name="RecentsManager">
     <key name="CopyFile.RECENT_KEYS">
+      <recent name="P:\PHPSTORM\Проекты\ispolka\resources\views\acts\templates" />
       <recent name="P:\PHPSTORM\Проекты\ispolka\resources\views\cms" />
       <recent name="D:\PHPSTORM\Проекты\ispolka\public\js" />
     </key>
     <key name="MoveFile.RECENT_KEYS">
+      <recent name="P:\PHPSTORM\Проекты\ispolka\database\migrations" />
       <recent name="P:\PHPSTORM\Проекты\ispolka\app\Models" />
     </key>
   </component>
@@ -254,7 +289,11 @@
       <workItem from="1752918931807" duration="1090000" />
       <workItem from="1752927985332" duration="323000" />
       <workItem from="1752928780633" duration="12274000" />
-      <workItem from="1752985562908" duration="10962000" />
+      <workItem from="1752985562908" duration="33658000" />
+      <workItem from="1753197390608" duration="2215000" />
+      <workItem from="1753200222273" duration="4314000" />
+      <workItem from="1753204926477" duration="2485000" />
+      <workItem from="1753371462957" duration="2192000" />
     </task>
     <task id="LOCAL-00001" summary="LARAVEL">
       <option name="closed" value="true" />
@@ -288,7 +327,15 @@
       <option name="project" value="LOCAL" />
       <updated>1752939187044</updated>
     </task>
-    <option name="localTasksCounter" value="5" />
+    <task id="LOCAL-00005" summary="LARAVEL">
+      <option name="closed" value="true" />
+      <created>1753001349517</created>
+      <option name="number" value="00005" />
+      <option name="presentableId" value="LOCAL-00005" />
+      <option name="project" value="LOCAL" />
+      <updated>1753001349517</updated>
+    </task>
+    <option name="localTasksCounter" value="6" />
     <servers />
   </component>
   <component name="TypeScriptGeneratedFilesManager">

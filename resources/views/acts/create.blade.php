@@ -8,8 +8,8 @@
             @include('acts.templates.hidden_works')
         @elseif($type === 'intermediate_accept')
             @include('acts.templates.intermediate_accept')
-        @elseif($type === 'act_type_3')
-            @include('acts.templates.act_type_3')
+        @elseif($type === 'prilozeniye_21')
+            @include('acts.templates.prilozeniye_21')
         @else
             <div class="alert alert-danger">Неизвестный тип акта</div>
         @endif

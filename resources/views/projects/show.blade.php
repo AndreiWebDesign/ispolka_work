@@ -50,39 +50,34 @@
             </div>
         @endif
         <h4 class="mb-3">Список актов</h4>
-
-
+        @php
+            $typeNames = [
+                'hidden_work' => 'Акты скрытых работ',
+                'intermediate_accept' => 'Акты промежуточной приёмки',
+                // Можно добавить другие типы, если будут
+            ];
+        @endphp
 
         @if ($acts->isEmpty())
             <div class="alert alert-info my-4">
                 Для этого объекта ещё нет актов.
             </div>
         @else
-            @php
-                $groupedActs = $acts->groupBy('type');
-
-                $typeNames = [
-                    'hidden_works' => 'Акты скрытых работ',
-                    'some_other_type' => 'Другой тип',
-                    null => 'Без типа',
-                ];
-            @endphp
-
 
             <div class="accordion" id="actsAccordion">
-                @foreach ($groupedActs as $type => $group)
+                @foreach ($acts as $type => $group)
                     <div class="accordion-item">
                         <h2 class="accordion-header" id="heading-{{ Str::slug($type) }}">
                             <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse"
                                     data-bs-target="#collapse-{{ Str::slug($type) }}" aria-expanded="false"
                                     aria-controls="collapse-{{ Str::slug($type) }}">
                                 {{ $typeNames[$type] ?? $type }} ({{ $group->count() }} шт.)
-
                             </button>
                         </h2>
                         <div id="collapse-{{ Str::slug($type) }}" class="accordion-collapse collapse"
                              aria-labelledby="heading-{{ Str::slug($type) }}" data-bs-parent="#actsAccordion">
                             <div class="accordion-body p-0">
+
                                 <table class="table table-bordered align-middle mb-0">
                                     <thead class="table-light">
                                     <tr>
@@ -94,38 +89,63 @@
                                     </thead>
                                     <tbody>
                                     @foreach ($group as $act)
-                                        <tr>
+                                        @php
+                                            $signersCount = $act->signatures->count();
+                                            $highlight = ($signersCount === 3) ? 'background-color: #d4edda;' : '';
+                                            $userSigned = $act->signatures->contains(function ($sig) {
+                                                return $sig->user_id === auth()->id() && $sig->status === 'подписано';
+                                            });
+                                        @endphp
+
+                                        <tr style="{{ $highlight }}">
                                             <td>{{ $act->act_number }}</td>
                                             <td>{{ $act->act_date }}</td>
-                                            <td>{{ $typeNames[$act->type] ?? $act->type }}</td>
+                                            <td>{{ $typeNames[$act->act_type] ?? $act->act_type }}</td>
                                             <td>
-                                                <div class="d-flex gap-2 flex-wrap">
-                                                    @if (empty($cmsFiles[$act->id]) || !$cmsFiles[$act->id])
-                                                        <button type="button" class="btn btn-outline-primary btn-sm" onclick="signAct({{ $act->id }})">
+                                                <div class="d-flex gap-2 flex-wrap align-items-center">
+
+                                                    {{-- Кнопка "Подписать и скачать" --}}
+                                                    @if (!$userSigned)
+                                                        <button type="button"
+                                                                id="sign-btn-{{ $act->act_number }}"
+                                                                class="btn btn-outline-primary btn-sm"
+                                                                onclick="signAct('{{ $act->type }}', {{ $act->act_number }})">
                                                             <i class="bi bi-pen me-1"></i> Подписать и скачать
                                                         </button>
                                                     @endif
 
-                                                    <a href="{{ route('pdf.view', $act->id) }}" class="btn btn-outline-secondary btn-sm" target="_blank">
-                                                        <i class="bi bi-eye me-1"></i> Просмотреть
+                                                    {{-- Кнопка "Просмотреть PDF" --}}
+                                                    <a href="{{ route('pdf.view', ['type' => $act->type, 'id' => $act->act_number]) }}"
+                                                       class="btn btn-outline-secondary btn-sm" target="_blank">
+                                                        <i class="bi bi-eye me-1"></i> Просмотреть PDF
                                                     </a>
 
-                                                    @if (!empty($cmsFiles[$act->id]) && $cmsFiles[$act->id])
-                                                        <a href="{{ route('cms.download', $act->id) }}" class="btn btn-outline-success btn-sm">
-                                                            <i class="bi bi-download me-1"></i> Скачать CMS
-                                                        </a>
+                                                    {{-- Вывод статуса --}}<div id="output-{{ $act->act_type }}-{{ $act->act_number }}" class="small text-muted mt-1"></div>
 
-                                                        <a href="{{ route('cms.view', $act->id) }}" class="btn btn-outline-info btn-sm" target="_blank">
-                                                            <i class="bi bi-shield-check me-1"></i> Проверить подпись
-                                                        </a>
-                                                    @endif
-
-                                                    <div id="output-{{ $act->id }}" class="small text-muted mt-1"></div>
                                                 </div>
-                                            </td>
 
+                                                {{-- Кнопка "Отклонить" --}}
+                                                @if(!$userSigned)
+                                                    <form action="{{ route('acts.reject') }}" method="POST" class="d-inline" onsubmit="return rejectAct(event, {{ $act->act_number }})">
+                                                        @csrf
+                                                        <input type="hidden" name="type" value="{{ $act->type }}">
+                                                        <input type="hidden" name="id" value="{{ $act->act_number }}">
+                                                        <input type="hidden" name="reason" id="reason-{{ $act->act_number }}">
+                                                        <button type="submit" class="btn btn-outline-danger btn-sm">
+                                                            <i class="bi bi-x-circle me-1"></i> Отклонить
+                                                        </button>
+                                                    </form>
+                                                @endif
+
+                                                {{-- Кнопка "История подписей" --}}
+                                                <a href="{{ route('acts.signatures', ['type' => $act->type, 'id' => $act->act_number]) }}"
+                                                   class="btn btn-outline-dark btn-sm" target="_blank">
+                                                    <i class="bi bi-list-check me-1"></i> Подписи
+                                                </a>
+                                            </td>
                                         </tr>
                                     @endforeach
+
                                     </tbody>
                                 </table>
                             </div>
@@ -134,7 +154,9 @@
                 @endforeach
             </div>
 
-        @endif
+            <div id="output-status" class="alert alert-info mt-3 d-none" role="alert">
+                <!-- Сюда будет подставляться сообщение -->
+            </div>        @endif
     </div>
 
     <script>
@@ -154,15 +176,20 @@
 
 
     <script>
-        async function signAct(actId) {
-            const output = document.getElementById('output-' + actId);
-            const setStatus = msg => output.textContent = msg;
+        async function signAct(type, actId) {
+
+            const setStatus = (msg) => {
+                const statusDiv = document.getElementById('output-status');
+                statusDiv.className = `alert alert-info mt-3`;
+                statusDiv.textContent = msg;
+                statusDiv.classList.remove('d-none');
+            };
 
             try {
                 setStatus('📥 Загружаем PDF...');
-                const base64pdf = await fetch(`/pdf/base64/${actId}`)
+                const base64pdf = await fetch(`/pdf/base64/${type}/${actId}`)
                     .then(r => r.json())
-                    .then(data => data.base64); // должна быть именно строка вида "JVBERi0xL..."
+                    .then(data => data.base64);
 
                 setStatus('🔌 Подключение к NCALayer...');
                 const ncl = new NCALayerClient();
@@ -182,19 +209,25 @@
                 console.log('CMS:', cms.slice(0, 100));
 
                 setStatus('📤 Отправка подписи на сервер...');
-                await sendCms(actId, cms); // ✅ здесь вызываем
+                await sendCms(actId, cms, type);
 
                 setStatus('✅ Успешно подписано!');
             } catch (err) {
                 console.error(err);
                 setStatus('❌ Ошибка: ' + err.message);
             }
+            // После успешной подписи
+            document.getElementById(`sign-btn-${actId}`)?.remove();
+            document.getElementById(`signed-block-${actId}`)?.style.setProperty('display', 'inline-flex');
+
         }
 
-        async function sendCms(actId, cms) {
+
+        async function sendCms(actId, cms, type) {
             const formData = new FormData();
             formData.append('id', actId);
             formData.append('cms', cms);
+            formData.append('type', type); // ← добавь нужный тип: 'hidden_works' или 'intermediate_accept'
 
             const csrfToken = document.querySelector('meta[name="csrf-token"]').getAttribute('content');
 
@@ -203,8 +236,8 @@
                     method: 'POST',
                     body: formData,
                     headers: {
-                        'X-CSRF-TOKEN': csrfToken
-                        // НЕ добавляй Content-Type, браузер сам установит boundary для multipart/form-data
+                        'X-CSRF-TOKEN': csrfToken,
+                        'Accept': 'application/json'
                     }
                 });
 
@@ -215,6 +248,7 @@
                 console.error('❌ Ошибка:', err);
             }
         }
+
     </script>
 
 

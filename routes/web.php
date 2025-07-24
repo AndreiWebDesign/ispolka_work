@@ -7,9 +7,9 @@ use App\Http\Controllers\ActController;
 use App\Http\Controllers\PdfActController;
 use App\Http\Controllers\QrController;
 use App\Http\Controllers\NotificationController;
-
 use App\Http\Controllers\ExecutiveDocsController;
 use App\Http\Controllers\CmsController;
+use App\Http\Controllers\ActSignatureController;
 
 
 
@@ -36,7 +36,7 @@ Route::middleware(['auth'])->group(function () {
         Route::post('/projects/{passport}/invite', [ObjectAndProjectController::class, 'invite'])->name('projects.invite');
         Route::get('/notifications', [ObjectAndProjectController::class, 'notifications'])->name('notifications');
         Route::get('/notifications/{id}', [NotificationController::class, 'show'])->name('notifications.show');
-        Route::get('/pdf/view/{id}', [PdfActController::class, 'view'])->name('pdf.view');
+        Route::get('/pdf/view/{type}/{id}', [PdfActController::class, 'view'])->name('pdf.view');
 
 
         Route::post('/invitations/{invitation}/accept', [ObjectAndProjectController::class, 'accept'])->name('invitation.accept');
@@ -47,12 +47,26 @@ Route::middleware(['auth'])->group(function () {
         Route::post('/projects/{passport}/acts', [ActController::class, 'store'])->name('acts.store');
         Route::get('/acts/{id}/pdf', [PdfActController::class, 'download'])->name('acts.pdf');
         Route::get('/acts/{id}', [PdfActController::class, 'view'])->name('acts.show');
-        Route::get('/cms/view/{filename}', [App\Http\Controllers\CmsController::class, 'viewCms'])
-            ->name('cms.view');
-        Route::get('/cms/download/{id}', [CmsController::class, 'download'])->name('cms.download');
+        Route::get('/cms/view/{passport}/{type}/{act}', [CmsController::class, 'viewCms'])->name('cms.view');
+        Route::get('/cms/download/{passport}/{type}/{act}', [CmsController::class, 'download'])->name('cms.download');
         Route::get('/projects/{passport}/acts/select', [ActController::class, 'select'])->name('acts.select');
-        Route::get('/pdf/base64/{id}', [PdfActController::class, 'getBase64']);
+        Route::get('/pdf/base64/{type}/{act_number}', [PdfActController::class, 'getBase64'])->name('pdf.base64');
+        Route::get('/cms/download/{passportId}/{type}/{actNumber}/{filename}', function ($passportId, $type, $actNumber, $filename) {
+            $path = storage_path("app/pdf_outputs/{$passportId}/{$type}/{$actNumber}/{$filename}");
+
+            if (!file_exists($path)) {
+                abort(404, 'Файл не найден');
+            }
+
+            return response()->download($path);
+        })->name('cms.download');
+
+
         Route::post('/pdf/sign', [PdfActController::class, 'sign']);
+        Route::get('/acts/{type}/{id}/signatures', [ActSignatureController::class, 'show'])->name('acts.signatures');
+        Route::post('/acts/reject', [\App\Http\Controllers\ActSignatureController::class, 'reject'])->name('acts.reject');
+
+
 
     });
 });

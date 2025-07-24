@@ -92,13 +92,25 @@ class ObjectAndProjectController extends Controller
 
     public function show(Passport $passport)
     {
-        // Защита доступа
         $hasAccess = $passport->users()->where('user_id', auth()->id())->exists() || $passport->user_id == auth()->id();
         if (!$hasAccess) {
             abort(403, 'Доступ запрещён');
         }
 
-        $acts = $passport->hiddenWorks()->orderBy('act_date', 'desc')->get();
+        $passport->load(['hiddenWorks.signatures.user', 'intermediateAccepts.signatures.user']);
+
+        $hiddenWorks = $passport->hiddenWorks->map(function ($item) {
+            $item->type = 'hidden_works';
+            return $item;
+        });
+
+        $intermediateAccepts = $passport->intermediateAccepts->map(function ($item) {
+            $item->type = 'intermediate_accept';
+            return $item;
+        });
+
+        $acts = $passport->acts->groupBy('act_type');
+
 
         $role = $passport->users()
             ->where('user_id', auth()->id())
@@ -106,16 +118,16 @@ class ObjectAndProjectController extends Controller
             ?->pivot
             ?->role;
 
-        // Также подрядчик, если он создал объект
         if (!$role && $passport->user_id == auth()->id()) {
             $role = 'подрядчик';
         }
 
-        // ➕ Проверка CMS файлов
         $cmsFiles = [];
-        foreach ($acts as $act) {
-            $cmsPath = storage_path("app/cms/act_{$act->id}.cms");
-            $cmsFiles[$act->id] = file_exists($cmsPath);
+        foreach ($acts as $group) {
+            foreach ($group as $act) {
+                $cmsPath = storage_path("app/pdf_outputs/{$passport->id}/{$act->type}/{$act->act_number}/1.cms");
+                $cmsFiles[$act->type . '_' . $act->act_number] = file_exists($cmsPath);
+            }
         }
 
         return view('projects.show', compact('passport', 'acts', 'role', 'cmsFiles'));

@@ -12,13 +12,30 @@ class ActController extends Controller
 {
     public function select(Passport $passport)
     {
-        $actTypes = [
-            'hidden_works' => 'Акт скрытых работ',
-            'intermediate_accept' => 'Акт промежуточной приемки ответственных конструкций',
-            // ... остальные типы
-        ];
+        $actTemplates = config('act_templates');
+        $groupedActs = [];
 
-        return view('acts.select', compact('passport', 'actTypes'));
+// Формируем массив
+        foreach ($actTemplates as $key => $template) {
+            $group = $template['group'] ?? 'Прочие акты';
+            $label = $template['label'] ?? $key;
+            $groupedActs[$group][$key] = $label;
+        }
+
+// 1. Сортируем группы по ключу (группе)
+        uksort($groupedActs, function ($a, $b) {
+            // Попробуем сортировать по номеру перед названием, если он есть
+            return strnatcasecmp($a, $b);
+        });
+
+// 2. Сортируем элементы внутри каждой группы по названию акта
+        foreach ($groupedActs as &$acts) {
+            asort($acts, SORT_NATURAL | SORT_FLAG_CASE);
+        }
+        unset($acts); // на всякий случай
+
+        return view('acts.select', compact('passport', 'groupedActs'));
+
     }
     // Форма создания акта для выбранного объекта
     public function create(Passport $passport, Request $request)
@@ -28,84 +45,104 @@ class ActController extends Controller
         }
 
         $type = $request->query('type');
+        $templates = config('act_templates');
 
-        $validTypes = ['hidden_works', 'intermediate_accept', 'type_3']; // перечисли все типы
-        if (!in_array($type, $validTypes)) {
+        if (!isset($templates[$type])) {
             abort(404, 'Неверный тип акта');
         }
 
-        $maxActNumber = HiddenWork::where('passport_id', $passport->id)->max('act_number');
+        $modelClass = $templates[$type]['model'];
+        $numberField = $templates[$type]['number_field'] ?? 'act_number';
+        $fieldsToTry = ['number_acts', 'number_act', 'act_number'];
+        $numberField = null;
+
+        foreach ($fieldsToTry as $field) {
+            if (
+                \Schema::hasColumn((new $modelClass)->getTable(), $field)
+            ) {
+                $numberField = $field;
+                break;
+            }
+        }
+        // Если не нашли — можно дефолт, но лучше выбросить ошибку
+        if (!$numberField) {
+            abort(503, 'Не найдено ни одно подходящее поле для номера акта.');
+        }
+
+        $maxActNumber = $modelClass::where('passport_id', $passport->id)->max($numberField);
+
         $nextActNumber = $maxActNumber ? $maxActNumber + 1 : 1;
 
-        return view('acts.create', compact('passport', 'nextActNumber', 'type'));
+        // Получаем название blade-шаблона, если указано (например: 'acts.templates.prilozeniye_21')
+        $view = $templates[$type]['view'] ?? 'acts.create';
+        return view($view, compact('passport', 'nextActNumber', 'type'));
     }
+
+
+
+    protected $actModels = [
+        'hidden_works' => \App\Models\HiddenWork::class,
+        'intermediate_accept' => \App\Models\IntermediateAccept::class,
+        'Prilozeniye_21' => \App\Models\Prilozeniye_21::class,
+        'Prilozeniye_22' => \App\Models\Prilozeniye_22::class,
+        'Prilozeniye_23' => \App\Models\Prilozeniye_23::class,
+        'Prilozeniye_24' => \App\Models\Prilozeniye_24::class,
+        'Prilozeniye_26' => \App\Models\Prilozeniye_26::class,
+        'Prilozeniye_27' => \App\Models\Prilozeniye_27::class,
+        'Prilozeniye_28' => \App\Models\Prilozeniye_28::class,
+        'Prilozeniye_29' => \App\Models\Prilozeniye_29::class,
+        'Prilozeniye_30' => \App\Models\Prilozeniye_30::class,
+        'Prilozeniye_31' => \App\Models\Prilozeniye_31::class,
+        'Prilozeniye_32' => \App\Models\Prilozeniye_32::class,
+        'Prilozeniye_67' => \App\Models\Prilozeniye_67::class,
+        'Prilozeniye_72' => \App\Models\Prilozeniye_72::class,
+        'Prilozeniye_73' => \App\Models\Prilozeniye_73::class,
+        'Prilozeniye_74' => \App\Models\Prilozeniye_74::class,
+        'Prilozeniye_75' => \App\Models\Prilozeniye_75::class,
+        'Prilozeniye_gotovn_podmostei' => \App\Models\Prilozeniye_gotovnPodmostei::class,
+        'prilozeniye_gotovn_lift' => \App\Models\prilozeniyeGotovnLift::class,
+
+
+        // другие типы…
+    ];
 
 
     // Сохранение акта для объекта
     public function store(Request $request, Passport $passport)
     {
-        $validated = $request->validate([
-            'type' => 'required|string',
-            'act_number' => 'required|string',
-            'act_date' => 'required|date',
-            'object_name' => 'required|string',
-            'passport_id' => 'required|exists:passports,id',
+        $type = $request->input('type');
 
-            // Комиссия
-            'contractor_representative' => 'required|string',
-            'tech_supervisor_representative' => 'required|string',
-            'author_supervisor_representative' => 'nullable|string',
-            'additional_participants' => 'nullable|string',
+        $templateConf = config("act_templates.$type");
 
-            // Работы
-            'work_executor' => 'required|string',
-            'hidden_works' => 'required|string',
-            'psd_info' => 'required|string',
-            'materials' => 'nullable|string',
-            'compliance_evidence' => 'nullable|string',
-            'deviations' => 'nullable|string',
-            'start_date' => 'nullable|date',
-            'end_date' => 'nullable|date',
-            'commission_decision' => 'required|string',
-            'next_works' => 'nullable|string',
+        if (!$templateConf) {
+            return back()->with('error', 'Неизвестный тип акта/шаблона');
+        }
 
-            // Подписи
-            'contractor_sign_name' => 'required|string',
-            'tech_supervisor_sign_name' => 'required|string',
-            'author_supervisor_sign_name' => 'nullable|string',
-        ]);
+        $validated = $request->validate($templateConf['validation']);
 
-        $act = HiddenWork::create($validated);
+        $modelClass = $this->actModels[$type] ?? null;
+        if (!$modelClass) {
+            return back()->with('error', 'Модель для акта не найдена');
+        }
 
-        // Генерация PDF после создания
-        $pdfPath = storage_path("app/pdf_outputs/act_{$act->id}.pdf");
-        $templatePath = storage_path('app/pdf_templates/hidden_work_template.pdf');
+        $act = $modelClass::create($validated);
 
-        $fields = [
-            'act_number' => $act->act_number,
-            'city' => $act->city,
-            'act_date' => $act->act_date,
-            'object_name' => $act->object_name,
-            'contractor_representative' => $act->contractor_representative,
-            'tech_supervisor_representative' => $act->tech_supervisor_representative,
-            'author_supervisor_representative' => $act->author_supervisor_representative,
-            'additional_participants' => $act->additional_participants,
-            'work_executor' => $act->work_executor,
-            'hidden_works' => $act->hidden_works,
-            'psd_info' => $act->psd_info,
-            'materials' => $act->materials,
-            'compliance_evidence' => $act->compliance_evidence,
-            'deviations' => $act->deviations,
-            'start_date' => $act->start_date,
-            'end_date' => $act->end_date,
-            'commission_decision' => $act->commission_decision,
-            'next_works' => $act->next_works,
-            'contractor_sign_name' => $act->contractor_sign_name,
-            'tech_supervisor_sign_name' => $act->tech_supervisor_sign_name,
-            'author_supervisor_sign_name' => $act->author_supervisor_sign_name,
-        ];
+        $fields = [];
+        foreach ($templateConf['fields'] as $field) {
+            $fields[$field] = $act->$field ?? '';
+        }
 
-        $pdf = new Pdf($templatePath);
+        $templatePath = storage_path('app/pdf_templates/' . $templateConf['pdf']);
+
+        // Создаём директорию: /storage/app/pdf_outputs/{passport_id}/{type}/{act_number}/
+        $actDirPath = storage_path("app/pdf_outputs/{$passport->id}/{$type}/{$act->act_number}");
+        if (!file_exists($actDirPath)) {
+            mkdir($actDirPath, 0775, true);
+        }
+
+        $pdfPath = "$actDirPath/{$act->act_number}.pdf";
+
+        $pdf = new \mikehaertl\pdftk\Pdf($templatePath);
         $result = $pdf->fillForm($fields)
             ->needAppearances()
             ->flatten()
@@ -113,11 +150,19 @@ class ActController extends Controller
             ->saveAs($pdfPath);
 
         if (!$result) {
-            return back()->with('error', 'Ошибка при создании PDF: ' . $pdf->getError());
+            $errorMessage = 'Ошибка при создании PDF: ' . $pdf->getError();
+            session()->flash('pdf_error', $errorMessage);
+            return back();
         }
 
-        return redirect()->route('projects.show',$passport)->with('success', 'Акт успешно создан и сохранён как PDF.');
+        return redirect()->route('projects.show', $passport)
+            ->with('success', 'Акт успешно создан.');
     }
+
+
+
+
+
 
     public function passport()
     {

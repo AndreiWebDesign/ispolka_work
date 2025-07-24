@@ -5,34 +5,31 @@ namespace App\Models;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 
-class HiddenWork extends Model
+class IntermediateAccept extends Model
 {
     use HasFactory;
 
     protected $fillable = [
         'passport_id',
         'act_number',
-        'city',
         'act_date',
         'object_name',
         'contractor_representative',
         'tech_supervisor_representative',
         'author_supervisor_representative',
         'additional_participants',
-        'work_executor',
-        'hidden_works',
+        'construction_stage',
+        'accepted_elements',
+        'hidden_works_status',
+        'compliance_info',
         'psd_info',
-        'materials',
-        'compliance_evidence',
-        'deviations',
-        'start_date',
-        'end_date',
+        'geodetic_info',
+        'test_results',
         'commission_decision',
         'next_works',
         'contractor_sign_name',
         'tech_supervisor_sign_name',
         'author_supervisor_sign_name',
-        'author_supervisor_sign',
         'type',
     ];
 
@@ -40,6 +37,7 @@ class HiddenWork extends Model
     {
         return $this->belongsTo(\App\Models\Passport::class);
     }
+
     public function signatures()
     {
         return $this->morphMany(ActSignature::class, 'actable');

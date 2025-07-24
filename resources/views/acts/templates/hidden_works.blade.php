@@ -155,6 +155,18 @@
             <button type="submit" class="btn btn-primary w-100 mt-3">Сохранить акт</button>
         </form>
     </div>
+    @if (session('pdf_error'))
+        <script>
+            console.error("PDF Error:", @json(session('pdf_error')));
+        </script>
+    @endif
+
+    @if (session('error'))
+        <script>
+            console.error("Ошибка:", @json(session('error')));
+        </script>
+    @endif
+
     @if ($errors->any())
         <div class="alert alert-danger">
             <ul class="mb-0">

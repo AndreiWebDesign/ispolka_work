@@ -7,6 +7,7 @@ use Symfony\Component\Process\Process;
 use Symfony\Component\Process\Exception\ProcessFailedException;
 use Illuminate\Support\Str;
 use Carbon\Carbon;
+use Illuminate\Support\Facades\File;
 
 class CmsController extends Controller
 {
@@ -38,51 +39,57 @@ class CmsController extends Controller
         return null;
     }
 
-    public function viewCms($filename)
+    public function viewCms($passportId, $type, $actNumber)
     {
-        $cmsPath = storage_path("app/cms/act_{$filename}.cms");
-
-        if (!file_exists($cmsPath)) {
-            return response("Файл {$filename} не найден", 404);
+        $cmsDir = storage_path("app/pdf_outputs/{$passportId}/{$type}/{$actNumber}");
+        if (!File::isDirectory($cmsDir)) {
+            return response("Папка актов не найдена", 404);
         }
 
-        $process = new Process([
-            'openssl',
-            'pkcs7',
-            '-inform', 'DER',
-            '-in', $cmsPath,
-            '-print_certs',
-            '-text'
-        ]);
+        $cmsFiles = File::files($cmsDir);
+        $signatures = [];
 
-        try {
-            $process->mustRun();
-            $rawOutput = $process->getOutput();
-            $decoded = $this->decodeHexStrings($rawOutput);
+        foreach ($cmsFiles as $file) {
+            if ($file->getExtension() !== 'cms') continue;
 
-            // Извлечение полей
-            $serial = $this->extractSerial($decoded);
-            $iin = $this->extractIin($decoded);
-            $fio = $this->extractFio($decoded);
-            $validity = $this->extractValidity($decoded);
-            $signingDate = $this->extractSigningTimeFromCms($cmsPath) ?? 'Не удалось извлечь';
+            $cmsPath = $file->getRealPath();
 
-            return view('cms.view', [
-                'serial' => $serial,
-                'iin' => $iin,
-                'fio' => $fio,
-                'validity' => $validity,
-                'signingDate' => $signingDate,
-                'status' => [
-                    'cert' => 'Успешно',
-                    'tsp' => 'Успешно',
-                    'sign' => 'Успешно'
-                ],
-                'template' => 'Физическое лицо'
+            $process = new Process([
+                'openssl', 'pkcs7',
+                '-inform', 'DER',
+                '-in', $cmsPath,
+                '-print_certs',
+                '-text'
             ]);
-        } catch (ProcessFailedException $e) {
-            return response("Ошибка при выполнении openssl: " . $e->getMessage(), 500);
+
+            try {
+                $process->mustRun();
+                $rawOutput = $process->getOutput();
+                $decoded = $this->decodeHexStrings($rawOutput);
+
+                $signatures[] = [
+                    'serial' => $this->extractSerial($decoded),
+                    'iin' => $this->extractIin($decoded),
+                    'fio' => $this->extractFio($decoded),
+                    'validity' => $this->extractValidity($decoded),
+                    'signingDate' => $this->extractSigningTimeFromCms($cmsPath) ?? 'Не удалось извлечь',
+                    'status' => [
+                        'cert' => 'Успешно',
+                        'tsp' => 'Успешно',
+                        'sign' => 'Успешно',
+                    ],
+                    'template' => 'Физическое лицо'
+                ];
+            } catch (ProcessFailedException $e) {
+                continue; // просто пропусти ошибочный файл
+            }
         }
+
+        if (empty($signatures)) {
+            return response("Нет валидных CMS файлов для акта", 404);
+        }
+
+        return view('cms.view', compact('signatures'));
     }
 
     private function decodeHexStrings($text)
@@ -133,9 +140,9 @@ class CmsController extends Controller
         }
         return null;
     }
-    public function download($id)
+    public function download($passportId, $type, $actNumber)
     {
-        $file = storage_path("app/cms/act_{$id}.cms");
+        $file = storage_path("app/pdf_outputs/{$passportId}/{$type}/{$actNumber}/1.cms");
 
         if (!file_exists($file)) {
             abort(404, 'Файл не найден');

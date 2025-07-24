@@ -7,9 +7,24 @@ use Illuminate\Support\Facades\Storage;
 use App\Models\HiddenWork;
 use Illuminate\Support\Facades\Response;
 use mikehaertl\pdftk\Pdf;
+use App\Models\ActSignature;
 
 class PdfActController extends Controller
 {
+    protected function notifyOtherRoles(HiddenWork $act)
+    {
+        $rolesToNotify = ['технадзор', 'авторнадзор'];
+
+        foreach ($rolesToNotify as $role) {
+            $users = User::where('role', $role)
+                ->whereHas('passports', fn($q) => $q->where('id', $act->passport_id))
+                ->get();
+
+            foreach ($users as $user) {
+                Notification::send($user, new ActSignedNotification($act, 'подрядчик'));
+            }
+        }
+    }
     public function show(Passport $passport)
     {
         $acts = $passport->acts;
@@ -26,24 +41,69 @@ class PdfActController extends Controller
     public function sign(Request $request)
     {
         $request->validate([
-            'id' => 'required|integer|exists:hidden_works,id',
+            'type' => 'required|string|in:hidden_works,intermediate_accept,other_type',
+            'id' => 'required|integer', // Это act_number
             'cms' => 'required|string',
         ]);
 
-        $act = HiddenWork::findOrFail($request->id);
+        $type = $request->input('type');
+        $actNumber = $request->input('id'); // Это act_number
         $cmsBase64 = $request->input('cms');
 
-        // Декодируй CMS и сохрани, например:
+        $modelMap = [
+            'hidden_works' => \App\Models\HiddenWork::class,
+            'intermediate_accept' => \App\Models\IntermediateAccept::class,
+        ];
+
+        if (!array_key_exists($type, $modelMap)) {
+            return response()->json(['error' => 'Invalid type provided.'], 422);
+        }
+
+        $modelClass = $modelMap[$type];
+
+        // ✅ Получаем акт по act_number
+        $act = $modelClass::where('act_number', $actNumber)->firstOrFail();
+        $passportId = $act->passport_id ?? 'unknown_passport';
+
+        $signatureCount = count(glob(storage_path("app/pdf_outputs/{$passportId}/{$type}/{$actNumber}/*.cms")));
+        $signatureNumber = $signatureCount + 1;
+
         $cmsBinary = base64_decode($cmsBase64);
-        $cmsPath = storage_path("app/cms/act_{$act->id}.cms");
+        $cmsPath = storage_path("app/pdf_outputs/{$passportId}/{$type}/{$actNumber}/{$signatureNumber}.cms");
+
+        $dir = dirname($cmsPath);
+        if (!file_exists($dir)) {
+            mkdir($dir, 0777, true);
+        }
+
         file_put_contents($cmsPath, $cmsBinary);
 
-        // Возвращаем успешный ответ
+        $user = auth()->user();
+
+        \App\Models\ActSignature::updateOrCreate(
+            [
+                'actable_id' => $act->id,
+                'actable_type' => $modelClass,
+                'user_id' => $user->id,
+                'role' => $user->role,
+            ],
+            [
+                'cms' => "pdf_outputs/{$passportId}/{$type}/{$actNumber}/{$signatureNumber}.cms",
+                'signed_at' => now(),
+                'status' => 'подписано',
+            ]
+        );
+
         return response()->json([
             'message' => 'CMS сохранён успешно',
             'cms_path' => $cmsPath
         ]);
     }
+
+
+
+
+
     public function signPdf(Request $request)
     {
         $id = $request->input('id');
@@ -59,9 +119,13 @@ class PdfActController extends Controller
     }
 
 
-    public function getBase64($id)
+    public function getBase64($type, $actNumber)
     {
-        $pdfPath = storage_path("app/pdf_outputs/act_{$id}.pdf");
+        $act = HiddenWork::where('act_number', $actNumber)->firstOrFail();
+
+        $passportId = $act->passport_id;
+
+        $pdfPath = storage_path("app/pdf_outputs/{$passportId}/{$type}/{$actNumber}/{$actNumber}.pdf");
 
         if (!file_exists($pdfPath)) {
             return response()->json(['error' => 'Файл не найден'], 404);
@@ -72,6 +136,8 @@ class PdfActController extends Controller
 
         return response()->json(['base64' => $base64]);
     }
+
+
 
     // Отдаёт PDF в виде Base64 для подписания (TBS для CMS)
     public function getPdfHashBase64($id)
@@ -134,57 +200,25 @@ class PdfActController extends Controller
             'Content-Type' => 'application/pkcs7-signature',
         ]);
     }
-    public function view($id)
+    public function view($type, $id)
     {
         $act = HiddenWork::findOrFail($id);
 
-        $pdfPath = storage_path("app/pdf_outputs/act_{$id}.pdf");
+        $passportId = $act->passport_id;
+        $actNumber = $act->act_number;
 
-        // Если файл отсутствует — генерируем его
+        $pdfPath = storage_path("app/pdf_outputs/{$passportId}/{$type}/{$actNumber}/{$actNumber}.pdf");
+
         if (!file_exists($pdfPath)) {
-            $templatePath = storage_path('app/pdf_templates/hidden_work_template.pdf');
-
-            $fields = [
-                'act_number' => $act->act_number,
-                'city' => $act->city,
-                'act_date' => $act->act_date,
-                'object_name' => $act->object_name,
-                'contractor_representative' => $act->contractor_representative,
-                'tech_supervisor_representative' => $act->tech_supervisor_representative,
-                'author_supervisor_representative' => $act->author_supervisor_representative,
-                'additional_participants' => $act->additional_participants,
-                'work_executor' => $act->work_executor,
-                'hidden_works' => $act->hidden_works,
-                'psd_info' => $act->psd_info,
-                'materials' => $act->materials,
-                'compliance_evidence' => $act->compliance_evidence,
-                'deviations' => $act->deviations,
-                'start_date' => $act->start_date,
-                'end_date' => $act->end_date,
-                'commission_decision' => $act->commission_decision,
-                'next_works' => $act->next_works,
-                'contractor_sign_name' => $act->contractor_sign_name,
-                'tech_supervisor_sign_name' => $act->tech_supervisor_sign_name,
-                'author_supervisor_sign_name' => $act->author_supervisor_sign_name,
-                'additional_signs' => $act->additional_signs,
-            ];
-
-            $pdf = new Pdf($templatePath);
-            $result = $pdf->fillForm($fields)
-                ->needAppearances()
-                ->flatten()
-                ->saveAs($pdfPath);
-
-            if (!$result) {
-                abort(500, 'Ошибка генерации PDF: ' . $pdf->getError());
-            }
+            abort(404, 'PDF-файл не найден.');
         }
 
-        // Возврат для отображения в браузере
         return response()->file($pdfPath, [
             'Content-Type' => 'application/pdf',
-            'Content-Disposition' => 'inline; filename="Акт_просмотр.pdf"',
+            'Content-Disposition' => 'inline; filename="Акт.pdf"',
         ]);
     }
+
+
 
 }
