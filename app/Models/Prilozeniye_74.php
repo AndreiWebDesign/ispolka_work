@@ -10,7 +10,7 @@ class Prilozeniye_74 extends Model
     use HasFactory;
 
     protected $fillable = [
-        'number_act',
+        'number_acts',
         'city',
         'day',
         'month',
@@ -22,7 +22,8 @@ class Prilozeniye_74 extends Model
         'exploat',       // эксплуатирующая организация (название, лицензии)
         'exploat_fio',   // фамилия и инициалы эксплуатирующей организации
         'object_name',   // наименование и адрес объекта
-        'docs',          // представленные документы, перечень
+        'docs',
+        'passport_id',// представленные документы, перечень
     ];
 
 

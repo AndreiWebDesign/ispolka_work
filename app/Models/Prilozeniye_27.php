@@ -57,6 +57,7 @@ class Prilozeniye_27 extends Model
         'day_shunt',
         'month_shunt',
         'year_shunt',
+        'passport_id',
     ];
 
 

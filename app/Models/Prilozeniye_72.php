@@ -20,6 +20,7 @@ class Prilozeniye_72 extends Model
         'subpo',    // субподрядная (монтажная) организация
         'day',
         'name_address',
+        'passport_id',
     ];
 
 

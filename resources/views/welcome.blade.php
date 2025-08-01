@@ -2,136 +2,196 @@
 <html lang="ru">
 <head>
     <meta charset="UTF-8">
-    <title>eCTN — Конструктор исполнительной документации</title>
+    <title>DocSTROI — Документация для строителей</title>
     <meta name="viewport" content="width=device-width, initial-scale=1">
-    <!-- Bootstrap CSS и иконки -->
+
+    <!-- Bootstrap и иконки -->
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
     <link href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.min.css" rel="stylesheet">
-</head>
-<body class="bg-light min-vh-100 d-flex flex-column">
 
-<header class="container py-4 d-flex justify-content-between align-items-center">
-    <div class="fw-bold fs-3 text-primary">eCTN</div>
-    <nav class="d-flex align-items-center flex-wrap">
-        <a href="#features" class="btn btn-link text-decoration-none mx-2">Возможности</a>
-        <a href="#howitworks" class="btn btn-link text-decoration-none mx-2">Как это работает</a>
-        <a href="#testimonials" class="btn btn-link text-decoration-none mx-2">Отзывы</a>
-        <a href="#faq" class="btn btn-link text-decoration-none mx-2">FAQ</a>
-        <a href="#pricing" class="btn btn-link text-decoration-none mx-2">Тарифы</a>
-        <a href="#contact" class="btn btn-link text-decoration-none mx-2">Контакты</a>
-        <a href="{{ route('login') }}" class="btn btn-outline-primary mx-2">Войти</a>
-        <a href="{{ route('register') }}" class="btn btn-primary mx-2">Регистрация</a>
-    </nav>
+    <style>
+        body {
+            scroll-behavior: smooth;
+        }
+        .card:hover {
+            box-shadow: 0 0 20px rgba(0, 0, 0, 0.08);
+            transform: translateY(-5px);
+            transition: 0.3s;
+        }
+        header a:hover {
+            text-decoration: underline;
+        }
+        .price-card {
+            transition: 0.3s;
+        }
+        .price-card:hover {
+            transform: scale(1.02);
+            box-shadow: 0 8px 24px rgba(0,0,0,0.1);
+        }
+    </style>
+</head>
+<body class="bg-light d-flex flex-column min-vh-100">
+
+<!-- Header -->
+<header class="bg-white border-bottom">
+    <div class="container d-flex justify-content-between align-items-center py-3">
+        <div class="fs-3 fw-bold text-primary">DocSTROI</div>
+        <nav class="d-flex align-items-center gap-4">
+            <a href="#features" class="text-dark text-decoration-none">Возможности</a>
+            <a href="#how" class="text-dark text-decoration-none">Как работает</a>
+            <a href="#pricing" class="text-dark text-decoration-none">Тарифы</a>
+            <a href="#contact" class="text-dark text-decoration-none">Контакты</a>
+        </nav>
+        <div class="d-flex gap-2">
+            <a href="{{ route('login') }}" class="btn btn-outline-primary">Войти</a>
+            <a href="{{ route('register') }}" class="btn btn-primary">Регистрация</a>
+        </div>
+    </div>
 </header>
 
-<main class="container flex-grow-1 d-flex flex-column justify-content-center align-items-center text-center">
-    <h1 class="display-4 fw-bold mb-3">Создавайте исполнительную документацию <span class="text-primary">онлайн</span> для строительства в РК</h1>
-    <p class="lead mb-4">Быстро, удобно и в полном соответствии с законодательством Казахстана.</p>
-    <a href="#start" class="btn btn-primary btn-lg px-5 shadow-sm mb-5">Попробовать бесплатно</a>
-
-    {{-- Блок "Возможности" --}}
-    <section class="row justify-content-center g-4 mt-4 w-100" id="features">
-        <div class="col-md-4">
-            <div class="card border-0 shadow h-100">
-                <div class="card-body">
-                    <div class="mb-3 fs-2 text-primary"><i class="bi bi-lightning-charge"></i></div>
-                    <h5 class="card-title fw-semibold">Автоматизация</h5>
-                    <p class="card-text">Мгновенное формирование документов по актуальным шаблонам РК.</p>
-                </div>
-            </div>
-        </div>
-        <div class="col-md-4">
-            <div class="card border-0 shadow h-100">
-                <div class="card-body">
-                    <div class="mb-3 fs-2 text-primary"><i class="bi bi-shield-check"></i></div>
-                    <h5 class="card-title fw-semibold">Соответствие стандартам</h5>
-                    <p class="card-text">Все формы соответствуют нормам и требованиям законодательства.</p>
-                </div>
-            </div>
-        </div>
-        <div class="col-md-4">
-            <div class="card border-0 shadow h-100">
-                <div class="card-body">
-                    <div class="mb-3 fs-2 text-primary"><i class="bi bi-clock-history"></i></div>
-                    <h5 class="card-title fw-semibold">Экономия времени</h5>
-                    <p class="card-text">Оформление документов в 5 раз быстрее.</p>
-                </div>
-            </div>
-        </div>
-    </section>
-
-    {{-- Блок "Как это работает" --}}
-    <section class="mt-5 w-100" id="howitworks">
-        <h2 class="fw-bold mb-4">Как это работает</h2>
-        <div class="row text-start justify-content-center">
-            <div class="col-md-4">
-                <h5>1. Зарегистрируйтесь</h5>
-                <p>Создайте аккаунт за 1 минуту.</p>
-            </div>
-            <div class="col-md-4">
-                <h5>2. Заполните шаблоны</h5>
-                <p>Выберите нужные формы и заполните данные.</p>
-            </div>
-            <div class="col-md-4">
-                <h5>3. Скачайте PDF</h5>
-                <p>Готовая исполнительная документация в один клик.</p>
-            </div>
-        </div>
-    </section>
-
-    {{-- Блок "Отзывы" --}}
-    <section class="mt-5 w-100" id="testimonials">
-        <h2 class="fw-bold mb-4">Отзывы пользователей</h2>
-        <div class="row justify-content-center">
+<!-- Hero -->
+<section class="py-5 bg-white">
+    <div class="container">
+        <div class="row align-items-center">
             <div class="col-md-6">
-                <blockquote class="blockquote">
-                    <p class="mb-0">Очень удобно и быстро. Сэкономили много времени на оформлении актов.</p>
-                    <footer class="blockquote-footer">Айгуль, инженер ПТО</footer>
-                </blockquote>
+                <h1 class="display-4 fw-bold">Создавайте исполнительную документацию онлайн</h1>
+                <p class="lead mt-3 mb-4">Платформа DocSTROI — это быстрый способ формировать акты и документы, соответствующие стандартам РК.</p>
+                <a href="#pricing" class="btn btn-primary btn-lg px-4">Попробовать бесплатно</a>
             </div>
-            <div class="col-md-6">
-                <blockquote class="blockquote">
-                    <p class="mb-0">Теперь вся исполнительная документация хранится в одном месте!</p>
-                    <footer class="blockquote-footer">Жанибек, прораб</footer>
-                </blockquote>
+            <div class="col-md-6 text-center">
+                <img src="https://assets.kpmg.com/content/dam/kpmg/xx/images/2017/11/international-tax-banner.jpg/jcr:content/renditions/original" alt="Demo Screenshot" class="img-fluid rounded shadow">
             </div>
         </div>
-    </section>
+    </div>
+</section>
 
-    {{-- Блок FAQ --}}
-    <section class="mt-5 w-100" id="faq">
-        <h2 class="fw-bold mb-4">Часто задаваемые вопросы</h2>
-        <div class="accordion" id="faqAccordion">
-            <div class="accordion-item">
-                <h2 class="accordion-header" id="faq1">
-                    <button class="accordion-button" type="button" data-bs-toggle="collapse" data-bs-target="#collapse1" aria-expanded="true" aria-controls="collapse1">
-                        Как начать пользоваться сервисом?
-                    </button>
-                </h2>
-                <div id="collapse1" class="accordion-collapse collapse show" aria-labelledby="faq1" data-bs-parent="#faqAccordion">
-                    <div class="accordion-body">
-                        Зарегистрируйтесь и начните с бесплатной версии без ограничений по времени.
+<!-- Features -->
+<section id="features" class="py-5 bg-light">
+    <div class="container">
+        <h2 class="fw-bold mb-4">Возможности</h2>
+        <div class="row g-4">
+            <div class="col-md-4">
+                <div class="card h-100 border-0 shadow-sm">
+                    <div class="card-body">
+                        <div class="fs-2 text-primary mb-2"><i class="bi bi-lightning-charge-fill"></i></div>
+                        <h5 class="card-title fw-semibold">Автоматизация</h5>
+                        <p class="card-text">Генерация документов в 1 клик на основе утверждённых шаблонов.</p>
                     </div>
                 </div>
             </div>
-            <div class="accordion-item">
-                <h2 class="accordion-header" id="faq2">
-                    <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#collapse2" aria-expanded="false" aria-controls="collapse2">
-                        Можно ли выгружать документы в PDF?
-                    </button>
-                </h2>
-                <div id="collapse2" class="accordion-collapse collapse" aria-labelledby="faq2" data-bs-parent="#faqAccordion">
-                    <div class="accordion-body">
-                        Да, вы можете экспортировать документы в формате PDF в любой момент.
+            <div class="col-md-4">
+                <div class="card h-100 border-0 shadow-sm">
+                    <div class="card-body">
+                        <div class="fs-2 text-primary mb-2"><i class="bi bi-check2-circle"></i></div>
+                        <h5 class="card-title fw-semibold">Юридическая точность</h5>
+                        <p class="card-text">Все формы соответствуют действующим строительным нормам РК.</p>
+                    </div>
+                </div>
+            </div>
+            <div class="col-md-4">
+                <div class="card h-100 border-0 shadow-sm">
+                    <div class="card-body">
+                        <div class="fs-2 text-primary mb-2"><i class="bi bi-clock-history"></i></div>
+                        <h5 class="card-title fw-semibold">Экономия времени</h5>
+                        <p class="card-text">Заполнение документов в 5 раз быстрее обычного.</p>
                     </div>
                 </div>
             </div>
         </div>
-    </section>
-</main>
+    </div>
+</section>
 
-<footer class="bg-primary text-white text-center py-3 mt-auto" id="contact">
-    &copy; 2025 eCTN. Все права защищены.
+<!-- How it works -->
+<section id="how" class="py-5 bg-white">
+    <div class="container">
+        <h2 class="fw-bold mb-4">Как работает сервис</h2>
+        <div class="d-flex justify-content-around text-center flex-wrap">
+            <div class="flex-grow-1 mx-2">
+                <div class="mb-3">
+                    <i class="bi bi-person-plus text-primary" style="font-size: 3rem;"></i>
+                </div>
+                <h5>Зарегистрируйтесь</h5>
+                <p>Создайте личный кабинет и получите доступ ко всем функциям.</p>
+            </div>
+            <div class="flex-grow-1 mx-2">
+                <div class="mb-3">
+                    <i class="bi bi-pencil-square text-primary" style="font-size: 3rem;"></i>
+                </div>
+                <h5>Заполните шаблон</h5>
+                <p>Выберите акт, внесите данные и система подготовит документ.</p>
+            </div>
+            <div class="flex-grow-1 mx-2">
+                <div class="mb-3">
+                    <i class="bi bi-file-earmark-pdf text-primary" style="font-size: 3rem;"></i>
+                </div>
+                <h5>Скачайте PDF</h5>
+                <p>Готовый документ можно сразу скачать или подписать ЭЦП.</p>
+            </div>
+        </div>
+    </div>
+</section>
+
+
+<!-- Pricing -->
+<section id="pricing" class="py-5 bg-light">
+    <div class="container">
+        <h2 class="fw-bold text-center mb-5">Тарифы</h2>
+        <div class="row g-4 justify-content-center">
+            <div class="col-md-4">
+                <div class="card price-card text-center border-primary">
+                    <div class="card-header bg-primary text-white fw-bold">Free</div>
+                    <div class="card-body">
+                        <h3 class="card-title">0₸</h3>
+                        <p class="card-text">Для небольших проектов и тестирования.</p>
+                        <ul class="list-unstyled">
+                            <li>✔ 5 документов в месяц</li>
+                            <li>✔ Поддержка email</li>
+                            <li>✖ Подпись ЭЦП</li>
+                        </ul>
+                        <a href="#" class="btn btn-outline-primary mt-3">Начать</a>
+                    </div>
+                </div>
+            </div>
+            <div class="col-md-4">
+                <div class="card price-card text-center border-success">
+                    <div class="card-header bg-success text-white fw-bold">Pro</div>
+                    <div class="card-body">
+                        <h3 class="card-title">2₸/мес</h3>
+                        <p class="card-text">Подходит для малого бизнеса и подрядчиков.</p>
+                        <ul class="list-unstyled">
+                            <li>✔ 100 документов в месяц</li>
+                            <li>✔ Электронная подпись</li>
+                            <li>✔ Хранение в облаке</li>
+                        </ul>
+                        <a href="#" class="btn btn-success mt-3">Подключить</a>
+                    </div>
+                </div>
+            </div>
+            <div class="col-md-4">
+                <div class="card price-card text-center border-dark">
+                    <div class="card-header bg-dark text-white fw-bold">Enterprise</div>
+                    <div class="card-body">
+                        <h3 class="card-title">по договору</h3>
+                        <p class="card-text">Индивидуальные решения для крупных проектов.</p>
+                        <ul class="list-unstyled">
+
+                            <li>✔ неограниченное документов в месяц</li>
+                            <li>✔ API-доступ</li>
+                            <li>✔ Интеграции</li>
+                        </ul>
+                        <a href="#" class="btn btn-dark mt-3">Запросить</a>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+
+<!-- Footer -->
+<footer id="contact" class="bg-primary text-white py-4 mt-auto">
+    <div class="container text-center">
+        &copy; 2025 DocSTROI. Все права защищены. | <a href="mailto:info@DocSTROI.kz" class="text-white text-decoration-underline">info@DocSTROI.kz</a>
+    </div>
 </footer>
 
 <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>

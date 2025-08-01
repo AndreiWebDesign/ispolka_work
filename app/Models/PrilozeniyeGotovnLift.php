@@ -5,7 +5,7 @@ namespace App\Models;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 
-class prilozeniyeGotovnLift extends Model
+class PrilozeniyeGotovnLift extends Model
 {
     use HasFactory;
 
@@ -25,6 +25,7 @@ class prilozeniyeGotovnLift extends Model
         'mo_dolj',
         'otdel_raboty',
         'lift_number',
+        'passport_id',
     ];
 
 

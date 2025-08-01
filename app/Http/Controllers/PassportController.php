@@ -44,7 +44,10 @@ class PassportController extends Controller
 
         return redirect()->route('projects.show', $passport)->with('success', 'Паспорт объекта создан!');
     }
-
+    public function prilozeniye75s()
+    {
+        return $this->hasMany(Prilozeniye_75::class, 'passport_id');
+    }
     // Просмотр паспорта и связанных актов (только для владельца)
     public function show(Passport $passport)
     {

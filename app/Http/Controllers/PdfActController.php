@@ -11,6 +11,31 @@ use App\Models\ActSignature;
 
 class PdfActController extends Controller
 {
+    protected $actModels = [
+        'hidden_works' => \App\Models\HiddenWork::class,
+        'intermediate_accept' => \App\Models\IntermediateAccept::class,
+        'Prilozeniye_21' => \App\Models\Prilozeniye_21::class,
+        'Prilozeniye_22' => \App\Models\Prilozeniye_22::class,
+        'Prilozeniye_23' => \App\Models\Prilozeniye_23::class,
+        'Prilozeniye_24' => \App\Models\Prilozeniye_24::class,
+        'Prilozeniye_26' => \App\Models\Prilozeniye_26::class,
+        'Prilozeniye_27' => \App\Models\Prilozeniye_27::class,
+        'Prilozeniye_28' => \App\Models\Prilozeniye_28::class,
+        'Prilozeniye_29' => \App\Models\Prilozeniye_29::class,
+        'Prilozeniye_30' => \App\Models\Prilozeniye_30::class,
+        'Prilozeniye_31' => \App\Models\Prilozeniye_31::class,
+        'Prilozeniye_32' => \App\Models\Prilozeniye_32::class,
+        'Prilozeniye_67' => \App\Models\Prilozeniye_67::class,
+        'Prilozeniye_72' => \App\Models\Prilozeniye_72::class,
+        'Prilozeniye_73' => \App\Models\Prilozeniye_73::class,
+        'Prilozeniye_74' => \App\Models\Prilozeniye_74::class,
+        'Prilozeniye_75' => \App\Models\Prilozeniye_75::class,
+        'Prilozeniye_gotovn_podmostei' => \App\Models\PrilozeniyeGotovnPodmostei::class,
+        'prilozeniye_gotovn_lift' => \App\Models\prilozeniyeGotovnLift::class,
+
+
+        // другие типы…
+    ];
     protected function notifyOtherRoles(HiddenWork $act)
     {
         $rolesToNotify = ['технадзор', 'авторнадзор'];
@@ -202,22 +227,41 @@ class PdfActController extends Controller
     }
     public function view($type, $id)
     {
-        $act = HiddenWork::findOrFail($id);
+        // Определяем модель по типу
+        $modelClass = $this->actModels[$type] ?? null;
+        if (!$modelClass) {
+            abort(404, 'Неизвестный тип акта!');
+        }
 
-        $passportId = $act->passport_id;
-        $actNumber = $act->act_number;
+        // Получаем акт по id
+        $act = $modelClass::where('act_number', $id)->firstOrFail();
+
+
+        // Формируем путь к PDF
+        $passportId = $act->passport_id ?? '0';
+        $actNumber  = $act->act_number ?? $id;
 
         $pdfPath = storage_path("app/pdf_outputs/{$passportId}/{$type}/{$actNumber}/{$actNumber}.pdf");
 
+        // === ВАЖНО! Выводим путь и результат file_exists через dd ===
+
+
+        // Если PDF-файла нет — 404, НИЧЕГО НЕ ГЕНЕРИРУЕМ!
         if (!file_exists($pdfPath)) {
             abort(404, 'PDF-файл не найден.');
         }
 
+        // Отдаём готовый PDF в браузер
+        $filename = 'Акт_' . $actNumber . '.pdf';
+        dd($acts);
+
         return response()->file($pdfPath, [
             'Content-Type' => 'application/pdf',
-            'Content-Disposition' => 'inline; filename="Акт.pdf"',
+            'Content-Disposition' => 'inline; filename="' . $filename . '"',
         ]);
     }
+
+
 
 
 

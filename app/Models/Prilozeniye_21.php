@@ -24,6 +24,7 @@ class Prilozeniye_21 extends Model
         'tech_docs_2',
         'prilojenie_1',
         'prilojenie_2',
+        'passport_id',
     ];
 
     public function passport()

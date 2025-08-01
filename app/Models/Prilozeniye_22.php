@@ -25,6 +25,7 @@ class Prilozeniye_22 extends Model
         'pred_sm_prinim',
         'day',
         'year',
+        'passport_id',
     ];
 
 

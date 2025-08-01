@@ -5,7 +5,7 @@ namespace App\Models;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 
-class Prilozeniye_gotovnPodmostei extends Model
+class PrilozeniyeGotovnPodmostei extends Model
 {
     use HasFactory;
 
@@ -35,6 +35,7 @@ class Prilozeniye_gotovnPodmostei extends Model
         'prinyal_mont_sign',
         'prinyal_mont_decipher',
         'prinyal_mont_date',
+        'passport_id',
     ];
 
 

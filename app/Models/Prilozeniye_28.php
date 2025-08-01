@@ -53,6 +53,7 @@ class Prilozeniye_28 extends Model
         'postanovila',
         'kachstv',
         'daln_rab',
+        'passport_id',
     ];
 
 

@@ -33,6 +33,7 @@ class Prilozeniye_31 extends Model
         'srok_raspalubki',
         'uslovia',
         'zapic_jurnal',
+        'passport_id',
     ];
 
     public function passport()

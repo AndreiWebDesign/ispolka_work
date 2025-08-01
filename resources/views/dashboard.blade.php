@@ -2,78 +2,80 @@
 @section('title', 'Панель управления')
 
 @section('content')
-    <div class="row">
-        <div class="col-md-7 py-4">
-            <div class="row mb-4">
-                <div class="col-md-6 mb-4">
-                    <div class="card shadow-sm">
-                        <div class="card-body">
-                            <h5 class="card-title mb-3">Статусы актов</h5>
-                            <canvas id="actsStatusChart" height="200"></canvas>
+    <div class="container py-5">
+        <h2 class="fw-bold text-center mb-5">Панель управления</h2>
+
+        <div class="row g-4">
+            {{-- Левая колонка с графиками --}}
+            <div class="col-lg-8">
+                <div class="row g-4">
+                    <div class="col-md-6">
+                        <div class="card shadow rounded-4 border-0 h-100">
+                            <div class="card-body">
+                                <h5 class="card-title mb-3 d-flex align-items-center">
+                                    <i class="bi bi-graph-up-arrow text-success me-2 fs-5"></i>
+                                    Статусы актов
+                                </h5>
+                                <canvas id="actsStatusChart" height="200"></canvas>
+                            </div>
                         </div>
                     </div>
-                </div>
-                <div class="col-md-6 mb-4">
-                    <div class="card shadow-sm">
-                        <div class="card-body">
-                            <h5 class="card-title mb-3">Динамика актов за месяц</h5>
-                            <canvas id="actsMonthChart" height="200"></canvas>
+                    <div class="col-md-6">
+                        <div class="card shadow rounded-4 border-0 h-100">
+                            <div class="card-body">
+                                <h5 class="card-title mb-3 d-flex align-items-center">
+                                    <i class="bi bi-bar-chart-line text-primary me-2 fs-5"></i>
+                                    Динамика за месяц
+                                </h5>
+                                <canvas id="actsMonthChart" height="200"></canvas>
+                            </div>
                         </div>
                     </div>
                 </div>
             </div>
-            <!-- Можно добавить еще графики или виджеты -->
-        </div>
-        <div class="col-md-3 py-4">
-            <div class="card shadow-sm mb-4">
-                <div class="card-header bg-white d-flex align-items-center">
-                    <i class="bi bi-bell-fill text-primary me-2"></i>
-                    <span class="fw-semibold">Уведомления</span>
+
+            {{-- Правая колонка с уведомлениями --}}
+            <div class="col-lg-4">
+                <div class="card shadow rounded-4 border-0 h-100">
+                    <div class="card-header bg-white border-0 d-flex align-items-center">
+                        <i class="bi bi-bell-fill text-warning me-2 fs-5"></i>
+                        <span class="fw-semibold">Уведомления</span>
+                    </div>
+                    <ul class="list-group list-group-flush" style="max-height: 400px; overflow-y: auto;">
+                        @forelse(auth()->user()->notifications->take(10) as $notification)
+                            <li class="list-group-item position-relative">
+                                <span class="badge rounded-pill
+                                    {{ $notification->read_at ? 'bg-secondary' : 'bg-success' }} me-2">
+                                    {{ $notification->read_at ? 'Прочитано' : 'Новое' }}
+                                </span>
+                                {{ $notification->data['message'] ?? 'Уведомление' }}
+                                <small class="text-muted d-block">{{ $notification->created_at->diffForHumans() }}</small>
+                                <a href="{{ route('notifications.show', $notification->id) }}" class="stretched-link"></a>
+                            </li>
+                        @empty
+                            <li class="list-group-item text-muted">Нет уведомлений</li>
+                        @endforelse
+                    </ul>
                 </div>
-                <ul class="list-group list-group-flush" style="max-height: 350px; overflow-y: auto;">
-                    @forelse(auth()->user()->notifications->take(10) as $notification)
-                        <li class="list-group-item">
-                    <span class="badge
-                        @if($notification->read_at) bg-secondary
-                        @else bg-success
-                        @endif
-                        me-2">
-                        {{ $notification->read_at ? 'Прочитано' : 'Новое' }}
-                    </span>
-
-                            {{-- Пример вывода текста уведомления --}}
-                            {{ $notification->data['message'] ?? 'Уведомление' }}
-
-                            <small class="text-muted d-block">
-                                {{ $notification->created_at->diffForHumans() }}
-                            </small>
-
-                            <a href="{{ route('notifications.show', $notification->id) }}" class="stretched-link"></a>
-                        </li>
-                    @empty
-                        <li class="list-group-item text-muted">Нет уведомлений</li>
-                    @endforelse
-                </ul>
             </div>
         </div>
-
     </div>
 
     @push('scripts')
         <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
         <script>
-            // График статусов актов (Pie)
+            // Статусы актов
             const ctxStatus = document.getElementById('actsStatusChart').getContext('2d');
             new Chart(ctxStatus, {
                 type: 'doughnut',
                 data: {
                     labels: ['Принятые', 'В обработке', 'Отклоненные'],
                     datasets: [{
-                        data: [42, 17, 5], // Здесь можно подставить реальные данные из контроллера
+                        data: [42, 17, 5], // Замените на реальные данные
                         backgroundColor: [
-                            'rgba(25, 135, 84, 0.8)',    // Принятые - зеленый
-                            'rgba(255, 193, 7, 0.8)',    // В обработке - желтый
-                            'rgba(220, 53, 69, 0.8)'     // Отклоненные - красный
+                            'rgba(25, 135, 84, 0.85)',
+                            'rgba(255, 193, 7, 0.85)',
+                            'rgba(220, 53, 69, 0.85)'
                         ],
                         borderWidth: 1
                     }]
@@ -85,15 +87,15 @@
                 }
             });
 
-            // График динамики по месяцам (Line)
+            // Динамика по месяцам
             const ctxMonth = document.getElementById('actsMonthChart').getContext('2d');
             new Chart(ctxMonth, {
                 type: 'line',
                 data: {
-                    labels: ['Янв', 'Фев', 'Мар', 'Апр', 'Май', 'Июн', 'Июл'],
+                    labels: ['Янв', 'Фев', 'Мар', 'Апр', 'Май', 'Июн', 'Июл', 'Авг', 'Сен', 'Окт', 'Ноя', 'Дек'],
                     datasets: [{
                         label: 'Создано актов',
-                        data: [5, 9, 14, 22, 18, 26, 31], // Примерные данные
+                        data: @json($monthlyActs),
                         fill: true,
                         backgroundColor: 'rgba(13, 110, 253, 0.1)',
                         borderColor: 'rgba(13, 110, 253, 1)',

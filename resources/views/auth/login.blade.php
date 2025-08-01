@@ -2,7 +2,14 @@
 @section('title', 'Вход')
 
 @section('content')
-    <div class="container d-flex flex-column justify-content-center align-items-center flex-grow-1">
+    <style>
+        body {
+            background:
+                    url('/images/back.svg') no-repeat center center fixed;
+            background-size: cover;
+        }
+    </style>
+    <div class="container min-vh-100 d-flex flex-column justify-content-center align-items-center">
         <form method="POST" action="{{ route('login') }}" class="bg-white p-4 rounded shadow w-100" style="max-width: 400px;">
             @csrf
             <h2 class="mb-4 text-center">Вход</h2>

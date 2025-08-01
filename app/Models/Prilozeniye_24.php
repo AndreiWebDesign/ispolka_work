@@ -22,6 +22,7 @@ class Prilozeniye_24 extends Model
         'otmetka_reper',
         'null_otmetka',
         'name_zdamiya',
+        'passport_id',
     ];
 
 

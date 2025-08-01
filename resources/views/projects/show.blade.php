@@ -52,7 +52,7 @@
         <h4 class="mb-3">Список актов</h4>
         @php
             $typeNames = [
-                'hidden_work' => 'Акты скрытых работ',
+                'hidden_works' => 'Акты скрытых работ',
                 'intermediate_accept' => 'Акты промежуточной приёмки',
                 // Можно добавить другие типы, если будут
             ];
@@ -77,7 +77,6 @@
                         <div id="collapse-{{ Str::slug($type) }}" class="accordion-collapse collapse"
                              aria-labelledby="heading-{{ Str::slug($type) }}" data-bs-parent="#actsAccordion">
                             <div class="accordion-body p-0">
-
                                 <table class="table table-bordered align-middle mb-0">
                                     <thead class="table-light">
                                     <tr>
@@ -90,6 +89,7 @@
                                     <tbody>
                                     @foreach ($group as $act)
                                         @php
+                                            $actNumber = $act->act_number ?? $act->number_act ?? $act->number_acts ?? null;
                                             $signersCount = $act->signatures->count();
                                             $highlight = ($signersCount === 3) ? 'background-color: #d4edda;' : '';
                                             $userSigned = $act->signatures->contains(function ($sig) {
@@ -98,60 +98,55 @@
                                         @endphp
 
                                         <tr style="{{ $highlight }}">
-                                            <td>{{ $act->act_number }}</td>
+                                            <td>{{ $actNumber }}</td>
                                             <td>{{ $act->act_date }}</td>
-                                            <td>{{ $typeNames[$act->act_type] ?? $act->act_type }}</td>
+                                            <td>{{ $typeNames[$act->type] ?? $act->type }}</td>
                                             <td>
                                                 <div class="d-flex gap-2 flex-wrap align-items-center">
-
-                                                    {{-- Кнопка "Подписать и скачать" --}}
                                                     @if (!$userSigned)
                                                         <button type="button"
-                                                                id="sign-btn-{{ $act->act_number }}"
+                                                                id="sign-btn-{{ $actNumber }}"
                                                                 class="btn btn-outline-primary btn-sm"
-                                                                onclick="signAct('{{ $act->type }}', {{ $act->act_number }})">
+                                                                onclick="signAct('{{ $act->type }}', {{ $actNumber }})">
                                                             <i class="bi bi-pen me-1"></i> Подписать и скачать
                                                         </button>
                                                     @endif
 
-                                                    {{-- Кнопка "Просмотреть PDF" --}}
-                                                    <a href="{{ route('pdf.view', ['type' => $act->type, 'id' => $act->act_number]) }}"
+                                                    <a href="{{ route('pdf.view', ['type' => $act->type, 'id' => $actNumber]) }}"
                                                        class="btn btn-outline-secondary btn-sm" target="_blank">
                                                         <i class="bi bi-eye me-1"></i> Просмотреть PDF
                                                     </a>
 
-                                                    {{-- Вывод статуса --}}<div id="output-{{ $act->act_type }}-{{ $act->act_number }}" class="small text-muted mt-1"></div>
-
+                                                    <div id="output-{{ $act->type }}-{{ $actNumber }}" class="small text-muted mt-1"></div>
                                                 </div>
 
-                                                {{-- Кнопка "Отклонить" --}}
-                                                @if(!$userSigned)
-                                                    <form action="{{ route('acts.reject') }}" method="POST" class="d-inline" onsubmit="return rejectAct(event, {{ $act->act_number }})">
+                                                @if (!$userSigned)
+                                                    <form action="{{ route('acts.reject') }}" method="POST" class="d-inline"
+                                                          onsubmit="return rejectAct(event, {{ $actNumber }})">
                                                         @csrf
                                                         <input type="hidden" name="type" value="{{ $act->type }}">
-                                                        <input type="hidden" name="id" value="{{ $act->act_number }}">
-                                                        <input type="hidden" name="reason" id="reason-{{ $act->act_number }}">
+                                                        <input type="hidden" name="id" value="{{ $actNumber }}">
+                                                        <input type="hidden" name="reason" id="reason-{{ $actNumber }}">
                                                         <button type="submit" class="btn btn-outline-danger btn-sm">
                                                             <i class="bi bi-x-circle me-1"></i> Отклонить
                                                         </button>
                                                     </form>
                                                 @endif
 
-                                                {{-- Кнопка "История подписей" --}}
-                                                <a href="{{ route('acts.signatures', ['type' => $act->type, 'id' => $act->act_number]) }}"
+                                                <a href="{{ route('acts.signatures', ['type' => $act->type, 'id' => $actNumber]) }}"
                                                    class="btn btn-outline-dark btn-sm" target="_blank">
                                                     <i class="bi bi-list-check me-1"></i> Подписи
                                                 </a>
                                             </td>
                                         </tr>
                                     @endforeach
-
                                     </tbody>
                                 </table>
                             </div>
                         </div>
                     </div>
                 @endforeach
+
             </div>
 
             <div id="output-status" class="alert alert-info mt-3 d-none" role="alert">

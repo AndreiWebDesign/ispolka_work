@@ -21,6 +21,7 @@ class Prilozeniye_26 extends Model
         'otmetka_rep',
         'zakl',
         'snip',
+        'passport_id',
     ];
 
 

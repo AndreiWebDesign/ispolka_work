@@ -10,7 +10,7 @@ class Prilozeniye_75 extends Model
     use HasFactory;
 
     protected $fillable = [
-        'number_act',
+        'number_acts',
         'city',
         'day',
         'month',
@@ -21,7 +21,8 @@ class Prilozeniye_75 extends Model
         'subpo',         // субподрядная (монтажная): ФИО, должность/организация
         'exploat',       // эксплуатирующая организация: ФИО, должность/организация
         'object_name',   // наименование и адрес объекта
-        'docs',          // предъявленная документация (текст или список)
+        'docs',
+        'passport_id',// предъявленная документация (текст или список)
     ];
 
 

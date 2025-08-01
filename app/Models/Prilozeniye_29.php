@@ -56,6 +56,7 @@ class Prilozeniye_29 extends Model
         'ustanovleno',
         'postanovili',
         'kachestvo',
+        'passport_id',
     ];
 
 

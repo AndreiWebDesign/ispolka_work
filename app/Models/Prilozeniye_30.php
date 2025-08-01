@@ -41,6 +41,7 @@ class Prilozeniye_30 extends Model
         'inj_2',
         'glav_injener',
         'proizvod_rabot',
+        'passport_id',
     ];
 
 

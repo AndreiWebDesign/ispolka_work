@@ -10,6 +10,9 @@ use App\Http\Controllers\NotificationController;
 use App\Http\Controllers\ExecutiveDocsController;
 use App\Http\Controllers\CmsController;
 use App\Http\Controllers\ActSignatureController;
+use App\Http\Controllers\PaymentController;
+use App\Http\Controllers\PassportWizardController;
+;
 
 
 
@@ -22,9 +25,13 @@ Route::get('/', function () {
 Route::middleware(['auth'])->group(function () {
     Route::get('/dashboard', [AuthController::class, 'dashboard'])->name('dashboard');
     Route::post('/logout', [AuthController::class, 'logout'])->name('logout');
-
+    Route::get('/profile', [ProfileController::class, 'index'])->name('profile.index');
     Route::get('/profile/complete', [ProfileController::class, 'edit'])->name('complete-profile');
     Route::post('/profile/complete', [ProfileController::class, 'update'])->name('profile.update');
+    Route::get('/profile/edit', [ProfileController::class, 'edit'])->name('profile.edit');
+    Route::post('/profile/update', [ProfileController::class, 'update'])->name('profile.update');
+    Route::post('/profile/invite', [ProfileController::class, 'inviteEmployee'])->name('profile.invite');
+
 
     Route::middleware('profile.complete')->group(function () {
         // Управление объектами и проектами (это одно и то же у тебя)
@@ -32,11 +39,28 @@ Route::middleware(['auth'])->group(function () {
         Route::get('/projects/create', [ObjectAndProjectController::class, 'projectCreate'])->name('projects.create');
         Route::post('/projects', [ObjectAndProjectController::class, 'store'])->name('projects.store');
         Route::get('/projects/{passport}', [ObjectAndProjectController::class, 'show'])->name('projects.show');
+        Route::get('/report/{passport}', [\App\Http\Controllers\ReportController::class, 'index'])->name('report.index');
+        Route::get('/report', [\App\Http\Controllers\ReportController::class, 'select'])->name('report.select');
+
+
+        Route::prefix('passport/create')->group(function () {
+            Route::get('/step1', [PassportWizardController::class, 'step1'])->name('passport.step1');
+            Route::post('/step1', [PassportWizardController::class, 'storeStep1'])->name('passport.storeStep1');
+
+            Route::get('/step2/{id}', [PassportWizardController::class, 'step2'])->name('passport.step2');
+            Route::post('/step2/{id}', [PassportWizardController::class, 'storeStep2'])->name('passport.storeStep2');
+
+            Route::get('/step3/{id}', [PassportWizardController::class, 'step3'])->name('passport.step3');
+            Route::post('/step3/{id}', [PassportWizardController::class, 'storeStep3'])->name('passport.storeStep3');
+
+            Route::get('/finish/{id}', [PassportWizardController::class, 'finish'])->name('passport.finish');
+        });
 
         Route::post('/projects/{passport}/invite', [ObjectAndProjectController::class, 'invite'])->name('projects.invite');
         Route::get('/notifications', [ObjectAndProjectController::class, 'notifications'])->name('notifications');
         Route::get('/notifications/{id}', [NotificationController::class, 'show'])->name('notifications.show');
         Route::get('/pdf/view/{type}/{id}', [PdfActController::class, 'view'])->name('pdf.view');
+        Route::get('/payments', [PaymentController::class, 'index'])->name('payments.index');
 
 
         Route::post('/invitations/{invitation}/accept', [ObjectAndProjectController::class, 'accept'])->name('invitation.accept');
@@ -46,7 +70,6 @@ Route::middleware(['auth'])->group(function () {
         Route::get('/projects/{passport}/acts/create', [ActController::class, 'create'])->name('acts.create');
         Route::post('/projects/{passport}/acts', [ActController::class, 'store'])->name('acts.store');
         Route::get('/acts/{id}/pdf', [PdfActController::class, 'download'])->name('acts.pdf');
-        Route::get('/acts/{id}', [PdfActController::class, 'view'])->name('acts.show');
         Route::get('/cms/view/{passport}/{type}/{act}', [CmsController::class, 'viewCms'])->name('cms.view');
         Route::get('/cms/download/{passport}/{type}/{act}', [CmsController::class, 'download'])->name('cms.download');
         Route::get('/projects/{passport}/acts/select', [ActController::class, 'select'])->name('acts.select');

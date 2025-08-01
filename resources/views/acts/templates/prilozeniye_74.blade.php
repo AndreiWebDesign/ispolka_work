@@ -8,9 +8,11 @@
             <input type="hidden" name="passport_id" value="{{ $passport->id }}">
             <input type="hidden" name="type" value="{{ request('type') }}">
 
-            <h2 class="mb-4 text-center">
-                Акт № {{ old('number_act', $nextActNumber ?? '') }} приёмки систем пылеудаления
-            </h2>
+            <div class="mb-3">
+                <label>Номер акта</label>
+                <input type="text" name="number_acts" class="form-control" value="{{ old('number_acts', $nextActNumber ?? '') }}" required>
+            </div>
+
 
             <div class="row mb-3">
                 <div class="col-md-3">

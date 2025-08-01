@@ -34,6 +34,8 @@ class HiddenWork extends Model
         'author_supervisor_sign_name',
         'author_supervisor_sign',
         'type',
+        'heading_key',   // ключ из config (например "montaj_balkonov")
+        'heading_text',  // полный текст заголовка (например "Акт ... на монтаж балконов ...")
     ];
 
     public function passport()

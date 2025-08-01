@@ -5,13 +5,15 @@ return [
         'label' => 'Акт освидетельствования скрытых работ',
         'group' => '1.4 Земляные работы',
         'model' => \App\Models\HiddenWork::class,
-        'pdf' => 'hidden_work.pdf',
+        'pdf' => 'hiddens_work.pdf',
         'validation' => [
             'type' => 'required|string',
             'act_number' => 'required|string',
             'act_date' => 'required|date',
             'object_name' => 'required|string',
             'passport_id' => 'required|exists:passports,id',
+            'heading_key' => 'required|string',
+            'heading_text' => 'required|string|max:255',
 
             // Комиссия
             'contractor_representative' => 'required|string',
@@ -58,6 +60,8 @@ return [
             'contractor_sign_name',
             'tech_supervisor_sign_name',
             'author_supervisor_sign_name',
+            'heading_text',
+            'heading_key',
         ],
     ],
     'intermediate_accept' => [
@@ -115,7 +119,7 @@ return [
         'label' => 'Акт приемки геодезической разбивочной основы для строительства',
         'group' => '1.3 Геодезические работы (ГОТОВ)',
         'model' => \App\Models\Prilozeniye_21::class,
-        'pdf' => 'prilozeniye_21.pdf',
+        'pdf' => '21.pdf',
         'view' => 'acts.templates.prilozeniye_21',
         'validation' => [
             'passport_id' => 'required|exists:passports,id',
@@ -157,7 +161,7 @@ return [
         'label' => 'Акт приемки-передачи результатов геодезических работ при строительстве зданий (сооружений)',
         'group' => '1.3 Геодезические работы (ГОТОВ)',
         'model' => \App\Models\Prilozeniye_22::class,
-        'pdf' => 'prilozeniye_22.pdf',
+        'pdf' => '22.pdf',
         'view' => 'acts.templates.prilozeniye_22', // имя blade-файла = resources/views/acts/templates/prilozeniye_22.blade.php
         'validation' => [
             'passport_id' => 'required|exists:passports,id',
@@ -199,7 +203,7 @@ return [
         'label' => 'Акт посадки здания',
         'group' => '1.3 Геодезические работы (ГОТОВ)',
         'model' => \App\Models\Prilozeniye_23::class,
-        'pdf' => 'prilozeniye_23.pdf',
+        'pdf' => '23.pdf',
         'view' => 'acts.templates.prilozeniye_23',
         'validation' => [
             'passport_id' => 'required|exists:passports,id',
@@ -239,7 +243,7 @@ return [
         'label' => 'Акт переноса отметки на репер',
         'group' => '1.3 Геодезические работы (ГОТОВ)',
         'model' => \App\Models\Prilozeniye_24::class,
-        'pdf' => 'prilozeniye_24.pdf',
+        'pdf' => '24.pdf',
         'view' => 'acts.templates.prilozeniye_24',
         'validation' => [
             'city' => 'required|string',
@@ -275,7 +279,7 @@ return [
         'label' => 'Акт геодезической проверки положения конструктивного элемента мостового сооружения в плане и профиле',
         'group' => '1.3 Геодезические работы (ГОТОВ)',
         'model' => \App\Models\Prilozeniye_26::class,
-        'pdf' => 'prilozeniye_26.pdf',
+        'pdf' => '26.pdf',
         'view' => 'acts.templates.prilozeniye_26',
         'validation' => [
             'number_acts'    => 'required|string',
@@ -309,7 +313,7 @@ return [
         'group' => 'Общая документация для всех видов производимых работ',
         'label' => 'Акт освидетельствования и приемки котлована',
         'model' => \App\Models\Prilozeniye_27::class,
-        'pdf' => 'prilozeniye_27.pdf',
+        'pdf' => '27.pdf',
         'view' => 'acts.templates.prilozeniye_27',
         'validation' => [
             'stroi_org' => 'required|string',
@@ -415,7 +419,7 @@ return [
         'label' => 'Акт освидетельствования и приемки свайного фундамента на забивных сваях (шпунтового ряда)',
         'group' => '1.4 Земляные работы',
         'model' => \App\Models\Prilozeniye_28::class,
-        'pdf' => 'prilozeniye_28.pdf',
+        'pdf' => '28.pdf',
         'view' => 'acts.templates.prilozeniye_28',
         'validation' => [
             'number_acts_1'    => 'required|string',
@@ -513,7 +517,7 @@ return [
         'label' => 'Акт освидетельствования и приемки полости пробуренной скважины для бетонирования столба, скважин в основании оболочки, уширения',
         'group' => '1.4 Земляные работы',
         'model' => \App\Models\Prilozeniye_29::class,
-        'pdf' => 'prilozeniye_29.pdf',
+        'pdf' => '29.pdf',
         'view' => 'acts.templates.prilozeniye_29',
         'validation' => [
             'stroi_org'                => 'required|string',
@@ -617,7 +621,7 @@ return [
         'label' => 'Акт осмотра открытых рвов и котлованов под фундаменты',
         'group' => '1.4 Земляные работы',
         'model' => \App\Models\Prilozeniye_30::class,
-        'pdf' => 'prilozeniye_30.pdf',
+        'pdf' => '30.pdf',
         'view' => 'acts.templates.prilozeniye_30',
         'validation' => [
             'act_number'        => 'required|string',
@@ -691,7 +695,7 @@ return [
         'label' => 'Акт об изготовлении контрольных образцов бетона',
         'group' => 'Общая документация для всех видов производимых работ',
         'model' => \App\Models\Prilozeniye_31::class,
-        'pdf'   => 'prilozeniye_31.pdf',
+        'pdf' => '31.pdf',
         'view'  => 'acts.templates.prilozeniye_31',
         'validation' => [
             'day'            => 'required|integer',
@@ -749,7 +753,7 @@ return [
         'group' => 'Общая документация для всех видов производимых работ',
         'label' => 'Акт приемки ответственных специальных вспомогательных сооружений (приспособлений, устройств) для строительства мостового сооружения',
         'model' => \App\Models\Prilozeniye_32::class,
-        'pdf' => 'prilozeniye_32.pdf',
+        'pdf' => '32.pdf',
         'view' => 'acts.templates.prilozeniye_32',
         'validation' => [
             'stroi_org'                    => 'required|string',
@@ -813,7 +817,7 @@ return [
         'label' => 'Акт проверки мусоропровода',
         'group' => 'Общая документация для всех видов производимых работ',
         'model' => \App\Models\Prilozeniye_67::class,
-        'pdf'   => 'prilozeniye_67.pdf',
+        'pdf' => '67.pdf',
         'view'  => 'acts.templates.prilozeniye_67',
         'number_field' => 'number_acts',
         'validation' => [
@@ -827,8 +831,8 @@ return [
             'cmo_2'           => 'nullable|string',
             'tnz_1'           => 'required|string',   // Представитель технадзора (ФИО, должность)
             'tnz_2'           => 'nullable|string',
-            'smo_prov_1#0'    => 'nullable|string',
-            'smo_prov_1#1'    => 'nullable|string',
+            'smo_prov_1_0'    => 'nullable|string',
+            'smo_prov_1_1'    => 'nullable|string',
             'rabot'           => 'required|string',   // Название СМО, выполнившей работы
             'psd_1'           => 'nullable|string',   // Наименование проектной организации, № чертежей, дата
             'psd_2'           => 'nullable|string',
@@ -847,8 +851,8 @@ return [
             'cmo_2',
             'tnz_1',
             'tnz_2',
-            'smo_prov_1#0',
-            'smo_prov_1#1',
+            'smo_prov_1_0',
+            'smo_prov_1_1',
             'rabot',
             'psd_1',
             'psd_2',
@@ -860,7 +864,7 @@ return [
         'label' => 'Акт приемки систем естественной вентиляции',
         'group' => 'Общая документация для всех видов производимых работ',
         'model' => \App\Models\Prilozeniye_72::class,
-        'pdf'   => 'prilozeniye_72.pdf',
+        'pdf' => '72.pdf',
         'view'  => 'acts.templates.prilozeniye_72',
         'number_field' => 'number_acts',
         'validation' => [
@@ -894,7 +898,7 @@ return [
         'group' => 'Климат и вентиляция',
         'label' => 'Акт приёмки систем кондиционирования воздуха',
         'model' => \App\Models\Prilozeniye_73::class,
-        'pdf'   => 'prilozeniye_73.pdf',
+        'pdf'   => '73.pdf',
         'view'  => 'acts.templates.prilozeniye_73',
         'number_field' => 'number_act',
         'validation' => [
@@ -935,11 +939,11 @@ return [
         'group' => 'Климат и вентиляция',
         'label' => 'Акт приёмки систем пылеудаления',
         'model' => \App\Models\Prilozeniye_74::class,
-        'pdf'   => 'prilozeniye_74.pdf',
+        'pdf'   => '74.pdf',
         'view'  => 'acts.templates.prilozeniye_74',
-        'number_field' => 'number_act',
+        'number_field' => 'number_acts',
         'validation' => [
-            'number_act'   => 'required|string',
+            'number_acts'   => 'required|string',
             'city'         => 'required|string',
             'day'          => 'required|integer',
             'month'        => 'required|string',
@@ -955,7 +959,7 @@ return [
             'passport_id'  => 'required|exists:passports,id',
         ],
         'fields' => [
-            'number_act',
+            'number_acts',
             'city',
             'day',
             'month',
@@ -974,11 +978,11 @@ return [
         'group' => 'Электрика, молниезащита',
         'label' => 'Акт приёмки молниезащиты',
         'model' => \App\Models\Prilozeniye_75::class,
-        'pdf'   => 'prilozeniye_75.pdf',
+        'pdf'   => '75.pdf',
         'view'  => 'acts.templates.prilozeniye_75',
-        'number_field' => 'number_act',
+        'number_field' => 'number_acts',
         'validation' => [
-            'number_act'   => 'required|string',
+            'number_acts'   => 'required|string',
             'city'         => 'required|string',
             'day'          => 'required|integer',
             'month'        => 'required|string',
@@ -993,7 +997,7 @@ return [
             'passport_id'  => 'required|exists:passports,id',
         ],
         'fields' => [
-            'number_act',
+            'number_acts',
             'city',
             'day',
             'month',
@@ -1011,7 +1015,7 @@ return [
         'group' => 'Лифтовое оборудование',
         'label' => 'Акт готовности подмостей для монтажа лифтов',
         'model' => \App\Models\PrilozeniyeGotovnPodmostei::class,
-        'pdf'   => 'prilozeniye_gotovn_podmostei.pdf',
+        'pdf'   => 'act-gotovn-podmostei.pdf',
         'view'  => 'acts.templates.prilozeniye_gotovn_podmostei',
         'number_field' => 'number_act',
         'validation' => [
@@ -1073,7 +1077,7 @@ return [
         'group' => 'Лифтовое оборудование',
         'label' => 'Акт готовности лифта к производству отделочных работ',
         'model' => \App\Models\PrilozeniyeGotovnLift::class,
-        'pdf'   => 'prilozeniye_gotovn_lift.pdf',
+        'pdf' => 'gotovn_lift.pdf',
         'view'  => 'acts.templates.prilozeniye_gotovn_lift',
         'number_field' => 'number_acts',
         'validation' => [
@@ -1087,9 +1091,9 @@ return [
             'tnp'             => 'required|string',
             'tnp_dolzj'       => 'nullable|string',
             'an'              => 'nullable|string',
-            'an_dplj'         => 'nullable|string',
+            'an_dolzh'         => 'nullable|string',
             'mo'              => 'nullable|string',
-            'mo_dolj'         => 'nullable|string',
+            'mo_dolzh'         => 'nullable|string',
             'otdel_raboty'    => 'nullable|string',
             'lift_number'     => 'nullable|string',
             'passport_id'     => 'required|exists:passports,id',

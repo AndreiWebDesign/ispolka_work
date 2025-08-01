@@ -21,7 +21,15 @@ class User extends Authenticatable
         'name',
         'email',
         'password',
+        'position',
+        'role',
+        'organization_name',
+        'bin',
+        'organization_id',
+        'is_profile_complete',
+        'available_passports',
     ];
+
 
     /**
      * The attributes that should be hidden for serialization.
@@ -54,6 +62,22 @@ class User extends Authenticatable
     }
 
 
+    public function projectInvitations()
+    {
+        return $this->hasMany(ProjectInvitation::class);
+    }
 
-
+    public function invitedPassports()
+    {
+        return $this->belongsToMany(
+            Passport::class,
+            'project_invitations',
+            'user_id',
+            'passport_id'
+        )->withPivot('role', 'status');
+    }
+    public function payments()
+    {
+        return $this->hasMany(\App\Models\Payment::class);
+    }
 }

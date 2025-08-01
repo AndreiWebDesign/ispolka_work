@@ -7,7 +7,13 @@
             @csrf
             <input type="hidden" name="passport_id" value="{{ $passport->id }}">
             <input type="hidden" name="type" value="{{ request('type') }}">
-            <h2 class="mb-4 text-center">Акт освидетельствования скрытых работ</h2>
+            <input type="hidden" name="heading_key" value="{{ $heading_key }}">
+            <input type="hidden" name="heading_text" value="{{ $headingText }}">
+            <h2 class="mb-4 text-center">
+                <strong>Акт</strong>
+                {{ $headingText ? ' ' . $headingText : ' освидетельствования скрытых работ' }}
+            </h2>
+
 
             <div class="row mb-3">
                 <div class="col-md-6">

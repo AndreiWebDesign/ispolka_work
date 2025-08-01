@@ -40,24 +40,27 @@ class ObjectAndProjectController extends Controller
     {
         $user = auth()->user();
 
-        // 1. Паспорта, созданные этим пользователем (он подрядчик)
-        $ownPassports = Passport::where('user_id', $user->id);
-
-        // 2. Паспорта, куда он приглашён (технадзор/авторнадзор)
-        $invitedPassports = $user->passports(); // если метод определён в модели
-
-        // Если нет метода -> добавим raw-запрос:
+        // Приглашённые паспорта (через project_user_roles)
         $invitedIds = \DB::table('project_user_roles')
             ->where('user_id', $user->id)
             ->pluck('passport_id');
 
-        $invitedPassports = Passport::whereIn('id', $invitedIds);
+        // Завершённые паспорта (step = 4)
+        $completedPassports = Passport::where('step', 4)
+            ->where(function ($query) use ($user, $invitedIds) {
+                $query->where('user_id', $user->id)
+                    ->orWhereIn('id', $invitedIds);
+            })->get();
 
-        // Объединяем
-        $passports = $ownPassports->union($invitedPassports)->get();
+        // Черновики (step < 4)
+        $draftPassports = Passport::where('step', '<', 4)
+            ->where('user_id', $user->id) // только свои черновики
+            ->get();
 
-        return view('projects.index', compact('passports'));
+        return view('projects.index', compact('completedPassports', 'draftPassports'));
     }
+
+
 
 
     public function create()
@@ -97,21 +100,69 @@ class ObjectAndProjectController extends Controller
             abort(403, 'Доступ запрещён');
         }
 
-        $passport->load(['hiddenWorks.signatures.user', 'intermediateAccepts.signatures.user']);
+        // Загрузка подписей всех типов
+        $passport->load([
+            'hiddenWorks.signatures.user',
+            'intermediateAccepts.signatures.user',
+            'prilozeniye21s.signatures.user',
+            'prilozeniye22s.signatures.user',
+            'prilozeniye23s.signatures.user',
+            'prilozeniye24s.signatures.user',
+            'prilozeniye26s.signatures.user',
+            'prilozeniye27s.signatures.user',
+            'prilozeniye28s.signatures.user',
+            'prilozeniye29s.signatures.user',
+            'prilozeniye30s.signatures.user',
+            'prilozeniye31s.signatures.user',
+            'prilozeniye32s.signatures.user',
+            'prilozeniye67s.signatures.user',
+            'prilozeniye72s.signatures.user',
+            'prilozeniye73s.signatures.user',
+            'prilozeniye74s.signatures.user',
+            'prilozeniye75s.signatures.user',
+            'prilozeniyeGotovnPodmosteis.signatures.user',
+            'prilozeniyeGotovnLifts.signatures.user',
+        ]);
 
-        $hiddenWorks = $passport->hiddenWorks->map(function ($item) {
-            $item->type = 'hidden_works';
-            return $item;
-        });
+        // Преобразование всех актов в коллекции с type
+        $actsCollections = collect();
 
-        $intermediateAccepts = $passport->intermediateAccepts->map(function ($item) {
-            $item->type = 'intermediate_accept';
-            return $item;
-        });
+        $mapTypes = [
+            'hidden_works' => $passport->hiddenWorks,
+            'intermediate_accept' => $passport->intermediateAccepts,
+            'prilozeniye_21' => $passport->prilozeniye21s,
+            'prilozeniye_22' => $passport->prilozeniye22s,
+            'prilozeniye_23' => $passport->prilozeniye23s,
+            'prilozeniye_24' => $passport->prilozeniye24s,
+            'prilozeniye_26' => $passport->prilozeniye26s,
+            'prilozeniye_27' => $passport->prilozeniye27s,
+            'prilozeniye_28' => $passport->prilozeniye28s,
+            'prilozeniye_29' => $passport->prilozeniye29s,
+            'prilozeniye_30' => $passport->prilozeniye30s,
+            'prilozeniye_31' => $passport->prilozeniye31s,
+            'prilozeniye_32' => $passport->prilozeniye32s,
+            'prilozeniye_67' => $passport->prilozeniye67s,
+            'prilozeniye_72' => $passport->prilozeniye72s,
+            'prilozeniye_73' => $passport->prilozeniye73s,
+            'prilozeniye_74' => $passport->prilozeniye74s,
+            'prilozeniye_75' => $passport->prilozeniye75s,
+            'prilozeniye_gotovn_podmostei' => $passport->prilozeniyeGotovnPodmosteis,
+            'prilozeniye_gotovn_lift' => $passport->prilozeniyeGotovnLifts,
+        ];
 
-        $acts = $passport->acts->groupBy('act_type');
+        foreach ($mapTypes as $type => $collection) {
+            $actsCollections = $actsCollections->merge(
+                $collection->map(function ($item) use ($type) {
+                    $item->type = $type;
+                    return $item;
+                })
+            );
+        }
 
+        // Группировка по типу
+        $acts = $actsCollections->groupBy('type');
 
+        // Получение роли пользователя
         $role = $passport->users()
             ->where('user_id', auth()->id())
             ->first()
@@ -122,6 +173,7 @@ class ObjectAndProjectController extends Controller
             $role = 'подрядчик';
         }
 
+        // Наличие CMS-файлов
         $cmsFiles = [];
         foreach ($acts as $group) {
             foreach ($group as $act) {
@@ -132,6 +184,7 @@ class ObjectAndProjectController extends Controller
 
         return view('projects.show', compact('passport', 'acts', 'role', 'cmsFiles'));
     }
+
 
 
     // ==== ПРОЕКТЫ ====
@@ -171,7 +224,8 @@ class ObjectAndProjectController extends Controller
         $invitation->update(['status' => 'accepted']);
         $invitation->passport->users()->attach($invitation->user_id, ['role' => $invitation->role]);
 
-        return back()->with('success', 'Вы присоединились к проекту.');
+        return redirect()->route('projects.index')->with('success', 'Вы присоединились к проекту.');
+
     }
 
     public function decline(ProjectInvitation $invitation)
@@ -180,9 +234,20 @@ class ObjectAndProjectController extends Controller
             abort(403);
         }
 
+        // Обновляем статус
         $invitation->update(['status' => 'declined']);
-        return back()->with('info', 'Приглашение отклонено.');
+
+        // Удаляем уведомление по условию
+        auth()->user()
+            ->notifications()
+            ->where('type', 'App\Notifications\ProjectInvitationNotification')
+            ->where('data->invitation_id', $invitation->id)
+            ->delete();
+
+        return redirect()->route('projects.index')->with('info', 'Приглашение отклонено.');
     }
+
+
 
     public function notifications()
     {

@@ -1,65 +1,77 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <project version="4">
+  <component name="AnalysisUIOptions">
+    <option name="ANALYZE_INJECTED_CODE" value="false" />
+  </component>
   <component name="AutoImportSettings">
     <option name="autoReloadType" value="SELECTIVE" />
   </component>
   <component name="ChangeListManager">
     <list default="true" id="52d24100-70ec-4410-bb3e-4821f146e503" name="Changes" comment="LARAVEL">
-      <change afterPath="$PROJECT_DIR$/app/Http/Controllers/ActSignatureController.php" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/app/Models/IntermediateAccept.php" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/app/Models/PrilozeniyeGotovnLift.php" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/app/Models/PrilozeniyeGotovnPodmostei.php" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/app/Models/Prilozeniye_21.php" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/app/Models/Prilozeniye_22.php" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/app/Models/Prilozeniye_23.php" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/app/Models/Prilozeniye_24.php" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/app/Models/Prilozeniye_26.php" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/app/Models/Prilozeniye_27.php" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/app/Models/Prilozeniye_28.php" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/app/Models/Prilozeniye_29.php" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/app/Models/Prilozeniye_30.php" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/app/Models/Prilozeniye_31.php" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/app/Models/Prilozeniye_32.php" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/app/Models/Prilozeniye_67.php" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/app/Models/Prilozeniye_72.php" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/app/Models/Prilozeniye_73.php" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/app/Models/Prilozeniye_74.php" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/app/Models/Prilozeniye_75.php" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/config/act_templates.php" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/resources/views/acts/signatures.blade.php" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/resources/views/acts/templates/Prilozeniye_21.blade.php" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/resources/views/acts/templates/prilozeniye_22.blade.php" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/resources/views/acts/templates/prilozeniye_23.blade.php" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/resources/views/acts/templates/prilozeniye_24.blade.php" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/resources/views/acts/templates/prilozeniye_26.blade.php" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/resources/views/acts/templates/prilozeniye_27.blade.php" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/resources/views/acts/templates/prilozeniye_28.blade.php" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/resources/views/acts/templates/prilozeniye_29.blade.php" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/resources/views/acts/templates/prilozeniye_30.blade.php" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/resources/views/acts/templates/prilozeniye_31.blade.php" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/resources/views/acts/templates/prilozeniye_32.blade.php" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/resources/views/acts/templates/prilozeniye_67.blade.php" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/resources/views/acts/templates/prilozeniye_72.blade.php" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/resources/views/acts/templates/prilozeniye_73.blade.php" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/resources/views/acts/templates/prilozeniye_74.blade.php" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/resources/views/acts/templates/prilozeniye_75.blade.php" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/resources/views/acts/templates/prilozeniye_gotovn_lift.blade.php" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/resources/views/acts/templates/prilozeniye_gotovn_podmostei.blade.php" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/app/Http/Controllers/PaymentController.php" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/app/Http/Controllers/ReportController.php" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/app/Models/Act.php" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/app/Models/PassportActType.php" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/config/hidden_work_headings.php" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/database/migrations/2025_07_22_171631_create_prilozeniye_73s_table.php" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/database/migrations/2025_07_22_171631_create_prilozeniye_74s_table.php" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/database/migrations/2025_07_22_171631_create_prilozeniye_75s_table.php" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/database/migrations/2025_07_22_171631_create_prilozeniye_lift_table.php" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/database/migrations/2025_07_22_171631_create_prilozeniye_podmost_table.php" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/resources/views/passport/step1.blade.php" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/resources/views/passport/step2.blade.php" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/resources/views/passport/step3.blade.php" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/resources/views/passport/summary.blade.php" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/resources/views/payments/index.blade.php" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/resources/views/profile/index.blade.php" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/resources/views/report/index.blade.php" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/resources/views/report/select.blade.php" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/app/Http/Controllers/ActController.php" beforeDir="false" afterPath="$PROJECT_DIR$/app/Http/Controllers/ActController.php" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/app/Http/Controllers/CmsController.php" beforeDir="false" afterPath="$PROJECT_DIR$/app/Http/Controllers/CmsController.php" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/app/Http/Controllers/Auth/AuthController.php" beforeDir="false" afterPath="$PROJECT_DIR$/app/Http/Controllers/Auth/AuthController.php" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/app/Http/Controllers/ObjectAndProjectController.php" beforeDir="false" afterPath="$PROJECT_DIR$/app/Http/Controllers/ObjectAndProjectController.php" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/app/Http/Controllers/PassportController.php" beforeDir="false" afterPath="$PROJECT_DIR$/app/Http/Controllers/PassportController.php" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/app/Http/Controllers/PdfActController.php" beforeDir="false" afterPath="$PROJECT_DIR$/app/Http/Controllers/PdfActController.php" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/app/Models/ActSignature.php" beforeDir="false" afterPath="$PROJECT_DIR$/app/Models/ActSignature.php" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/app/Http/Controllers/ProfileController.php" beforeDir="false" afterPath="$PROJECT_DIR$/app/Http/Controllers/ProfileController.php" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/app/Models/HiddenWork.php" beforeDir="false" afterPath="$PROJECT_DIR$/app/Models/HiddenWork.php" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/app/Models/Passport.php" beforeDir="false" afterPath="$PROJECT_DIR$/app/Models/Passport.php" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/resources/views/acts/create.blade.php" beforeDir="false" afterPath="$PROJECT_DIR$/resources/views/acts/create.blade.php" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/app/Models/PrilozeniyeGotovnLift.php" beforeDir="false" afterPath="$PROJECT_DIR$/app/Models/PrilozeniyeGotovnLift.php" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/app/Models/PrilozeniyeGotovnPodmostei.php" beforeDir="false" afterPath="$PROJECT_DIR$/app/Models/PrilozeniyeGotovnPodmostei.php" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/app/Models/Prilozeniye_21.php" beforeDir="false" afterPath="$PROJECT_DIR$/app/Models/Prilozeniye_21.php" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/app/Models/Prilozeniye_22.php" beforeDir="false" afterPath="$PROJECT_DIR$/app/Models/Prilozeniye_22.php" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/app/Models/Prilozeniye_23.php" beforeDir="false" afterPath="$PROJECT_DIR$/app/Models/Prilozeniye_23.php" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/app/Models/Prilozeniye_24.php" beforeDir="false" afterPath="$PROJECT_DIR$/app/Models/Prilozeniye_24.php" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/app/Models/Prilozeniye_26.php" beforeDir="false" afterPath="$PROJECT_DIR$/app/Models/Prilozeniye_26.php" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/app/Models/Prilozeniye_27.php" beforeDir="false" afterPath="$PROJECT_DIR$/app/Models/Prilozeniye_27.php" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/app/Models/Prilozeniye_28.php" beforeDir="false" afterPath="$PROJECT_DIR$/app/Models/Prilozeniye_28.php" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/app/Models/Prilozeniye_29.php" beforeDir="false" afterPath="$PROJECT_DIR$/app/Models/Prilozeniye_29.php" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/app/Models/Prilozeniye_30.php" beforeDir="false" afterPath="$PROJECT_DIR$/app/Models/Prilozeniye_30.php" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/app/Models/Prilozeniye_31.php" beforeDir="false" afterPath="$PROJECT_DIR$/app/Models/Prilozeniye_31.php" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/app/Models/Prilozeniye_32.php" beforeDir="false" afterPath="$PROJECT_DIR$/app/Models/Prilozeniye_32.php" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/app/Models/Prilozeniye_67.php" beforeDir="false" afterPath="$PROJECT_DIR$/app/Models/Prilozeniye_67.php" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/app/Models/Prilozeniye_72.php" beforeDir="false" afterPath="$PROJECT_DIR$/app/Models/Prilozeniye_72.php" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/app/Models/Prilozeniye_73.php" beforeDir="false" afterPath="$PROJECT_DIR$/app/Models/Prilozeniye_73.php" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/app/Models/Prilozeniye_74.php" beforeDir="false" afterPath="$PROJECT_DIR$/app/Models/Prilozeniye_74.php" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/app/Models/Prilozeniye_75.php" beforeDir="false" afterPath="$PROJECT_DIR$/app/Models/Prilozeniye_75.php" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/app/Models/User.php" beforeDir="false" afterPath="$PROJECT_DIR$/app/Models/User.php" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/app/Notifications/ProjectInvitationNotification.php" beforeDir="false" afterPath="$PROJECT_DIR$/app/Notifications/ProjectInvitationNotification.php" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/config/act_templates.php" beforeDir="false" afterPath="$PROJECT_DIR$/config/act_templates.php" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/resources/views/acts/select.blade.php" beforeDir="false" afterPath="$PROJECT_DIR$/resources/views/acts/select.blade.php" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/resources/views/acts/templates/hidden_works.blade.php" beforeDir="false" afterPath="$PROJECT_DIR$/resources/views/acts/templates/hidden_works.blade.php" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/resources/views/acts/templates/intermediate_accept.blade.php" beforeDir="false" afterPath="$PROJECT_DIR$/resources/views/acts/templates/intermediate_accept.blade.php" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/resources/views/cms/view.blade.php" beforeDir="false" afterPath="$PROJECT_DIR$/resources/views/cms/view.blade.php" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/resources/views/acts/templates/prilozeniye_26.blade.php" beforeDir="false" afterPath="$PROJECT_DIR$/resources/views/acts/templates/prilozeniye_26.blade.php" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/resources/views/acts/templates/prilozeniye_28.blade.php" beforeDir="false" afterPath="$PROJECT_DIR$/resources/views/acts/templates/prilozeniye_28.blade.php" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/resources/views/acts/templates/prilozeniye_73.blade.php" beforeDir="false" afterPath="$PROJECT_DIR$/resources/views/acts/templates/prilozeniye_73.blade.php" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/resources/views/acts/templates/prilozeniye_74.blade.php" beforeDir="false" afterPath="$PROJECT_DIR$/resources/views/acts/templates/prilozeniye_74.blade.php" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/resources/views/acts/templates/prilozeniye_75.blade.php" beforeDir="false" afterPath="$PROJECT_DIR$/resources/views/acts/templates/prilozeniye_75.blade.php" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/resources/views/auth/login.blade.php" beforeDir="false" afterPath="$PROJECT_DIR$/resources/views/auth/login.blade.php" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/resources/views/dashboard.blade.php" beforeDir="false" afterPath="$PROJECT_DIR$/resources/views/dashboard.blade.php" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/resources/views/layouts/app.blade.php" beforeDir="false" afterPath="$PROJECT_DIR$/resources/views/layouts/app.blade.php" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/resources/views/notifications/show.blade.php" beforeDir="false" afterPath="$PROJECT_DIR$/resources/views/notifications/show.blade.php" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/resources/views/profile/complete.blade.php" beforeDir="false" afterPath="$PROJECT_DIR$/resources/views/profile/complete.blade.php" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/resources/views/projects/create.blade.php" beforeDir="false" afterPath="$PROJECT_DIR$/resources/views/projects/create.blade.php" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/resources/views/projects/index.blade.php" beforeDir="false" afterPath="$PROJECT_DIR$/resources/views/projects/index.blade.php" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/resources/views/projects/show.blade.php" beforeDir="false" afterPath="$PROJECT_DIR$/resources/views/projects/show.blade.php" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/resources/views/welcome.blade.php" beforeDir="false" afterPath="$PROJECT_DIR$/resources/views/welcome.blade.php" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/routes/web.php" beforeDir="false" afterPath="$PROJECT_DIR$/routes/web.php" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
@@ -86,6 +98,7 @@
     &quot;accountId&quot;: &quot;29cacb55-5684-4df7-b5d7-cb680cf58018&quot;
   }
 }</component>
+  <component name="PhpDebugGeneral" listening_started="true" />
   <component name="PhpWorkspaceProjectConfiguration" interpreter_name="C:/xampp/php/php.exe">
     <include_path>
       <path value="$PROJECT_DIR$/vendor/filp/whoops" />
@@ -216,34 +229,43 @@
     <option name="hideEmptyMiddlePackages" value="true" />
     <option name="showLibraryContents" value="true" />
   </component>
-  <component name="PropertiesComponent">{
-  &quot;keyToString&quot;: {
-    &quot;ASKED_SHARE_PROJECT_CONFIGURATION_FILES&quot;: &quot;true&quot;,
-    &quot;ModuleVcsDetector.initialDetectionPerformed&quot;: &quot;true&quot;,
-    &quot;RunOnceActivity.ShowReadmeOnStart&quot;: &quot;true&quot;,
-    &quot;RunOnceActivity.TerminalTabsStorage.copyFrom.TerminalArrangementManager&quot;: &quot;true&quot;,
-    &quot;RunOnceActivity.git.unshallow&quot;: &quot;true&quot;,
-    &quot;disable.download.node.interpreter.editor.notification&quot;: &quot;true&quot;,
-    &quot;git-widget-placeholder&quot;: &quot;master&quot;,
-    &quot;ignore.virus.scanning.warn.message&quot;: &quot;true&quot;,
-    &quot;last_opened_file_path&quot;: &quot;P:/PHPSTORM/Проекты/ispolka/resources/views/acts/templates&quot;,
-    &quot;node.js.detected.package.eslint&quot;: &quot;true&quot;,
-    &quot;node.js.detected.package.tslint&quot;: &quot;true&quot;,
-    &quot;node.js.selected.package.eslint&quot;: &quot;(autodetect)&quot;,
-    &quot;node.js.selected.package.tslint&quot;: &quot;(autodetect)&quot;,
-    &quot;nodejs_package_manager_path&quot;: &quot;npm&quot;,
-    &quot;settings.editor.selected.configurable&quot;: &quot;org.jetbrains.plugins.github.ui.GithubSettingsConfigurable&quot;,
-    &quot;ts.external.directory.path&quot;: &quot;P:\\PHPSTORM\\PhpStorm 2025.1.3\\plugins\\javascript-plugin\\jsLanguageServicesImpl\\external&quot;,
-    &quot;vue.rearranger.settings.migration&quot;: &quot;true&quot;
+  <component name="PropertiesComponent"><![CDATA[{
+  "keyToString": {
+    "ASKED_SHARE_PROJECT_CONFIGURATION_FILES": "true",
+    "ModuleVcsDetector.initialDetectionPerformed": "true",
+    "RunOnceActivity.ShowReadmeOnStart": "true",
+    "RunOnceActivity.TerminalTabsStorage.copyFrom.TerminalArrangementManager": "true",
+    "RunOnceActivity.git.unshallow": "true",
+    "WebServerToolWindowPanel.toolwindow.highlight.mappings": "true",
+    "WebServerToolWindowPanel.toolwindow.highlight.symlinks": "true",
+    "WebServerToolWindowPanel.toolwindow.show.date": "false",
+    "WebServerToolWindowPanel.toolwindow.show.permissions": "false",
+    "WebServerToolWindowPanel.toolwindow.show.size": "false",
+    "disable.download.node.interpreter.editor.notification": "true",
+    "git-widget-placeholder": "master",
+    "ignore.virus.scanning.warn.message": "true",
+    "last_opened_file_path": "P:/PHPSTORM/Проекты/ispolka/resources/views/passport",
+    "node.js.detected.package.eslint": "true",
+    "node.js.detected.package.tslint": "true",
+    "node.js.selected.package.eslint": "(autodetect)",
+    "node.js.selected.package.tslint": "(autodetect)",
+    "nodejs_package_manager_path": "npm",
+    "run.code.analysis.last.selected.profile": "pProject Default",
+    "settings.editor.selected.configurable": "web.server",
+    "ts.external.directory.path": "P:\\PHPSTORM\\PhpStorm 2025.1.3\\plugins\\javascript-plugin\\jsLanguageServicesImpl\\external",
+    "vue.rearranger.settings.migration": "true"
   }
-}</component>
+}]]></component>
   <component name="RecentsManager">
     <key name="CopyFile.RECENT_KEYS">
+      <recent name="P:\PHPSTORM\Проекты\ispolka\resources\views\passport" />
+      <recent name="P:\PHPSTORM\Проекты\ispolka\database\migrations" />
       <recent name="P:\PHPSTORM\Проекты\ispolka\resources\views\acts\templates" />
       <recent name="P:\PHPSTORM\Проекты\ispolka\resources\views\cms" />
       <recent name="D:\PHPSTORM\Проекты\ispolka\public\js" />
     </key>
     <key name="MoveFile.RECENT_KEYS">
+      <recent name="P:\PHPSTORM\Проекты\ispolka\resources\views\profile" />
       <recent name="P:\PHPSTORM\Проекты\ispolka\database\migrations" />
       <recent name="P:\PHPSTORM\Проекты\ispolka\app\Models" />
     </key>
@@ -294,6 +316,16 @@
       <workItem from="1753200222273" duration="4314000" />
       <workItem from="1753204926477" duration="2485000" />
       <workItem from="1753371462957" duration="2192000" />
+      <workItem from="1753374574142" duration="765000" />
+      <workItem from="1753377612585" duration="7630000" />
+      <workItem from="1753440828265" duration="6487000" />
+      <workItem from="1753452901748" duration="13938000" />
+      <workItem from="1753632122221" duration="19000" />
+      <workItem from="1753709061778" duration="604000" />
+      <workItem from="1753709782925" duration="6183000" />
+      <workItem from="1754028251114" duration="31000" />
+      <workItem from="1754029274336" duration="184000" />
+      <workItem from="1754029481790" duration="5625000" />
     </task>
     <task id="LOCAL-00001" summary="LARAVEL">
       <option name="closed" value="true" />
@@ -347,5 +379,16 @@
     <MESSAGE value="LARAVEL" />
     <option name="LAST_COMMIT_MESSAGE" value="LARAVEL" />
     <option name="NON_MODAL_COMMIT_POSTPONE_SLOW_CHECKS" value="false" />
+  </component>
+  <component name="XDebuggerManager">
+    <breakpoint-manager>
+      <breakpoints>
+        <line-breakpoint enabled="true" type="php">
+          <url>file://$PROJECT_DIR$/resources/views/projects/create.blade.php</url>
+          <line>90</line>
+          <option name="timeStamp" value="1" />
+        </line-breakpoint>
+      </breakpoints>
+    </breakpoint-manager>
   </component>
 </project>

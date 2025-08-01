@@ -7,7 +7,6 @@
             @csrf
             <input type="hidden" name="passport_id" value="{{ $passport->id }}">
             <input type="hidden" name="type" value="{{ request('type') }}">
-
             <h2 class="mb-4 text-center">Акт освидетельствования и приемки свайного фундамента на забивных сваях (шпунтового ряда)</h2>
 
             <div class="row mb-3">
@@ -136,7 +135,7 @@
                     <input type="text" name="glubina_project" class="form-control" value="{{ old('glubina_project') }}">
                 </div>
                 <div class="col-md-3">
-                    <label class="form-label">Глубина организации (м)</label>
+                    <label class="form-label">Глубина организация (м)</label>
                     <input type="text" name="glubina_org" class="form-control" value="{{ old('glubina_org') }}">
                 </div>
             </div>
@@ -145,4 +144,74 @@
                 <textarea name="sootvetstv" class="form-control" rows="2">{{ old('sootvetstv') }}</textarea>
             </div>
             <div class="mb-3">
-                <label class
+                <label class="form-label">Уровень воды в котловане (ниже/выше подошвы, динамика, откачка)</label>
+                <input type="text" name="voda_niz" class="form-control" value="{{ old('voda_niz') }}">
+            </div>
+            <div class="mb-3">
+                <label class="form-label">Водоотлив, дренаж, их состояние и эффективность</label>
+                <input type="text" name="vodootliv" class="form-control" value="{{ old('vodootliv') }}">
+            </div>
+            <div class="mb-3">
+                <label class="form-label">Состояние откосов, ограждений, креплений (вне котлована)</label>
+                <input type="text" name="vne_kotl" class="form-control" value="{{ old('vne_kotl') }}">
+            </div>
+            <div class="mb-3">
+                <label class="form-label">Интенсивность поступления воды в котлован (сведения)</label>
+                <input type="text" name="intens_voda" class="form-control" value="{{ old('intens_voda') }}">
+            </div>
+            <div class="mb-3">
+                <label class="form-label">Состояние выемки, глубина и тип грунта</label>
+                <input type="text" name="grynt_glubina" class="form-control" value="{{ old('grynt_glubina') }}">
+            </div>
+            <div class="mb-3">
+                <label class="form-label">Журнал работ</label>
+                <input type="text" name="jurnal" class="form-control" value="{{ old('jurnal') }}">
+            </div>
+            <div class="row mb-3">
+                <div class="col-md-4">
+                    <label class="form-label">Количество свай</label>
+                    <input type="text" name="kolvo" class="form-control" value="{{ old('kolvo') }}">
+                </div>
+                <div class="col-md-4">
+                    <label class="form-label">Номер акта</label>
+                    <input type="text" name="number_acts" class="form-control" value="{{ old('number_acts') }}">
+                </div>
+                <div class="col-md-2">
+                    <label class="form-label">День акта</label>
+                    <input type="number" name="day-act" class="form-control" value="{{ old('day-act') }}">
+                </div>
+                <div class="col-md-2">
+                    <label class="form-label">Месяц акта</label>
+                    <input type="text" name="month-act" class="form-control" value="{{ old('month-act') }}">
+                </div>
+                <div class="col-md-2">
+                    <label class="form-label">Год акта</label>
+                    <input type="number" name="year-act" class="form-control" value="{{ old('year-act') }}">
+                </div>
+            </div>
+            <div class="mb-3">
+                <label class="form-label">Что постановила комиссия</label>
+                <textarea name="postanovila" class="form-control" rows="2">{{ old('postanovila') }}</textarea>
+            </div>
+            <div class="mb-3">
+                <label class="form-label">Качество свай/шпунтового ряда, замечания</label>
+                <input type="text" name="kachstv" class="form-control" value="{{ old('kachstv') }}">
+            </div>
+            <div class="mb-3">
+                <label class="form-label">Дальнейшие работы (замечания, рекомендации)</label>
+                <input type="text" name="daln_rab" class="form-control" value="{{ old('daln_rab') }}">
+            </div>
+
+            <button type="submit" class="btn btn-primary w-100 mt-3">Сохранить акт</button>
+        </form>
+    </div>
+    @if ($errors->any())
+        <div class="alert alert-danger mt-3">
+            <ul class="mb-0">
+                @foreach ($errors->all() as $error)
+                    <li>{{ $error }}</li>
+                @endforeach
+            </ul>
+        </div>
+    @endif
+@endsection

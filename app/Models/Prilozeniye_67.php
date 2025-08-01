@@ -20,13 +20,14 @@ class Prilozeniye_67 extends Model
         'cmo_2',
         'tnz_1',
         'tnz_2',
-        'smo_prov_1#0',
-        'smo_prov_1#1',
+        'smo_prov_1_0',
+        'smo_prov_1_1',
         'rabot',
         'psd_1',
         'psd_2',
         'material_1',
         'material_2',
+        'passport_id',
     ];
 
 

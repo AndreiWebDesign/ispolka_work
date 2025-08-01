@@ -36,6 +36,7 @@ class Prilozeniye_32 extends Model
         'chitat_rabots',
         'priznat',
         'razreshit',
+        'passport_id',
     ];
 
 

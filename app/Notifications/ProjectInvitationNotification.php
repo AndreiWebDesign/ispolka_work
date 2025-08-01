@@ -33,6 +33,7 @@ class ProjectInvitationNotification extends Notification
         return [
             'message' => 'Вас пригласили к участию в объекте "' . $this->passport->object_name . '" как ' . $this->role,
             'passport_id' => $this->passport->id, // ⚠️ ключ должен совпадать с тем, что ты используешь в Blade
+            'invitation_id' => $this->invitation->id,
         ];
     }
 
